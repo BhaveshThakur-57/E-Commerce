@@ -1,45 +1,64 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, Heart, Star, ArrowLeft, Truck, Shield } from "lucide-react";
 import { useCart } from "../context/CartContext";
-
-const PRODUCTS = Array.from({ length: 12 }, (_, i) => ({
-  _id: String(i + 1),
-  name: [
-    "Oversized Zen Hoodie","Canvas Sneakers","Cargo Pants","Linen Blazer",
-    "Knit Beanie","Leather Belt","Silk Scarf","Denim Jacket",
-    "Track Pants","Chunky Boots","Merino Sweater","Swim Shorts",
-  ][i],
-  price: [2499,3999,3299,5499,899,1299,1999,4999,2299,5999,3799,1799][i],
-  category: ["Tops","Footwear","Bottoms","Outerwear","Accessories","Accessories","Accessories","Outerwear","Bottoms","Footwear","Tops","Bottoms"][i],
-  rating: [4.8,4.5,4.7,4.9,4.3,4.1,4.6,4.8,4.4,4.9,4.7,4.2][i],
-  image: `https://picsum.photos/seed/shop${i + 1}/400/500`,
-  stock: [8,4,12,3,20,15,7,5,11,2,9,16][i],
-  description: "A premium quality piece crafted with attention to detail. Perfect for everyday wear with a modern aesthetic that blends comfort and style seamlessly.",
-}));
+import { useAuth } from "../context/AuthContext";
+import { getProductByIdAPI } from "../services/productService";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState(null);   // ✅ added
+  const [loading, setLoading] = useState(true);   // ✅ added
+
   const [selectedSize, setSelectedSize] = useState("M");
   const [liked, setLiked] = useState(false);
   const [added, setAdded] = useState(false);
 
-  const product = PRODUCTS.find((p) => p._id === id) || PRODUCTS[0];
+  // ✅ FETCH REAL PRODUCT
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await getProductByIdAPI(id);
+        setProduct(data);
+      } catch (err) {
+        console.error("Failed to fetch product");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleAdd = () => {
-    addItem(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    fetchProduct();
+  }, [id]);
+
+  const handleAdd = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    try {
+      setAdded(true);
+      await addItem(product);
+      setTimeout(() => setAdded(false), 1500);
+    } catch (err) {
+      console.error("Failed to add to cart");
+      setAdded(false);
+    }
   };
+
+  // ✅ loading states
+  if (loading) return <div className="pt-28 text-center">Loading...</div>;
+  if (!product) return <div className="pt-28 text-center">Product not found</div>;
 
   return (
     <main className="min-h-screen pt-28 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-        {/* Back */}
         <Link
           to="/shop"
           className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-brand-500 transition-colors mb-8"
@@ -48,7 +67,6 @@ const ProductDetail = () => {
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Image */}
           <div className="relative rounded-3xl overflow-hidden aspect-[3/4] bg-zinc-100 dark:bg-zinc-800">
             <img
               src={product.image}
@@ -68,7 +86,6 @@ const ProductDetail = () => {
             </button>
           </div>
 
-          {/* Info */}
           <div className="flex flex-col justify-center space-y-6">
             <div>
               <p className="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-2">
@@ -104,7 +121,6 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            {/* Size Selector */}
             <div>
               <p className="font-semibold text-sm mb-3">
                 Select Size:{" "}
@@ -127,7 +143,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex gap-4">
               <button
                 onClick={handleAdd}
@@ -149,16 +164,10 @@ const ProductDetail = () => {
               </button>
             </div>
 
-            {/* Trust */}
             <div className="flex gap-6 pt-2">
-              {[
-                { icon: Truck, text: "Free delivery over ₹999" },
-                { icon: Shield, text: "30-day returns" },
-              ].map(({ icon: Icon, text }) => (
-                <div
-                  key={text}
-                  className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
-                >
+              {[{ icon: Truck, text: "Free delivery over ₹999" },
+                { icon: Shield, text: "30-day returns" }].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
                   <Icon size={15} className="text-brand-500" />
                   {text}
                 </div>

@@ -1,42 +1,25 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import {
+  getCartAPI,
+  addToCartAPI,
+  updateCartItemAPI,
+  removeFromCartAPI,
+  clearCartAPI,
+} from "../services/cartService";
 
 const CartContext = createContext();
 
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case "ADD_ITEM": {
-      const exists = state.items.find((i) => i._id === action.payload._id);
-      if (exists) {
-        return {
-          ...state,
-          items: state.items.map((i) =>
-            i._id === action.payload._id ? { ...i, qty: i.qty + 1 } : i
-          ),
-        };
-      }
-      return {
-        ...state,
-        items: [...state.items, { ...action.payload, qty: 1 }],
-      };
-    }
-    case "REMOVE_ITEM":
-      return {
-        ...state,
-        items: state.items.filter((i) => i._id !== action.payload),
-      };
-    case "UPDATE_QTY":
-      return {
-        ...state,
-        items: state.items
-          .map((i) =>
-            i._id === action.payload.id ? { ...i, qty: action.payload.qty } : i
-          )
-          .filter((i) => i.qty > 0),
-      };
-    case "CLEAR_CART":
-      return { ...state, items: [] };
+    case "SET_CART":
+      return { ...state, items: action.payload, loading: false };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
     case "TOGGLE_CART":
       return { ...state, isOpen: !state.isOpen };
+    case "CLOSE_CART":
+      return { ...state, isOpen: false };
     default:
       return state;
   }
@@ -46,27 +29,71 @@ export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
     isOpen: false,
+    loading: false,
   });
 
-  const addItem = (product) =>
-    dispatch({ type: "ADD_ITEM", payload: product });
+  const { user } = useAuth();
 
-  const removeItem = (id) =>
-    dispatch({ type: "REMOVE_ITEM", payload: id });
+  // Fetch cart when user logs in
+  useEffect(() => {
+    if (user) {
+      fetchCart();
+    } else {
+      dispatch({ type: "SET_CART", payload: [] });
+    }
+  }, [user]);
 
-  const updateQty = (id, qty) =>
-    dispatch({ type: "UPDATE_QTY", payload: { id, qty } });
+  const fetchCart = async () => {
+    try {
+      dispatch({ type: "SET_LOADING", payload: true });
+      const data = await getCartAPI();
+      dispatch({ type: "SET_CART", payload: data.items || [] });
+    } catch {
+      dispatch({ type: "SET_CART", payload: [] });
+    }
+  };
 
-  const clearCart = () => dispatch({ type: "CLEAR_CART" });
+ const addItem = async (product, qty = 1) => {
+  try {
+    const productId = product._id || product.product;
+    const data = await addToCartAPI(productId, qty);
+    dispatch({ type: "SET_CART", payload: data.items || [] });
+  } catch (err) {
+    console.error(err.response?.data?.message || "Failed to add item");
+  }
+};
+
+  const removeItem = async (productId) => {
+    try {
+      const data = await removeFromCartAPI(productId);
+      dispatch({ type: "SET_CART", payload: data.items || [] });
+    } catch (err) {
+      console.error("Failed to remove item");
+    }
+  };
+
+  const updateQty = async (productId, qty) => {
+    try {
+      const data = await updateCartItemAPI(productId, qty);
+      dispatch({ type: "SET_CART", payload: data.items || [] });
+    } catch (err) {
+      console.error("Failed to update quantity");
+    }
+  };
+
+  const clearCart = async () => {
+    try {
+      await clearCartAPI();
+      dispatch({ type: "SET_CART", payload: [] });
+    } catch (err) {
+      console.error("Failed to clear cart");
+    }
+  };
 
   const toggleCart = () => dispatch({ type: "TOGGLE_CART" });
 
   const totalItems = state.items.reduce((sum, i) => sum + i.qty, 0);
-
-  const totalPrice = state.items.reduce(
-    (sum, i) => sum + i.price * i.qty,
-    0
-  );
+  const totalPrice = state.items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   return (
     <CartContext.Provider
@@ -77,6 +104,7 @@ export const CartProvider = ({ children }) => {
         updateQty,
         clearCart,
         toggleCart,
+        fetchCart,
         totalItems,
         totalPrice,
       }}

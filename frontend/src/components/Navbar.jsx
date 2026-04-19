@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag, Menu, X, Search, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext"; // ✅ ADDED
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { toggleCart, totalItems } = useCart();
+  const { user, logout } = useAuth(); // ✅ ADDED
   const location = useLocation();
 
   useEffect(() => {
@@ -27,11 +29,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
           ? "glass shadow-lg shadow-black/5 py-3"
           : "bg-transparent py-5"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
 
@@ -51,11 +52,10 @@ const Navbar = () => {
             <li key={link.label}>
               <Link
                 to={link.to}
-                className={`text-sm font-medium relative group transition-colors duration-200 ${
-                  location.pathname === link.to
+                className={`text-sm font-medium relative group transition-colors duration-200 ${location.pathname === link.to
                     ? "text-brand-500"
                     : "text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-400"
-                }`}
+                  }`}
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-400 group-hover:w-full transition-all duration-300 rounded-full" />
@@ -67,12 +67,15 @@ const Navbar = () => {
         {/* Right Icons */}
         <div className="flex items-center gap-3">
           <ThemeToggle />
+
           <button className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500">
             <Search size={18} />
           </button>
+
           <button className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500">
             <Heart size={18} />
           </button>
+
           <button
             onClick={toggleCart}
             className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500"
@@ -84,12 +87,29 @@ const Navbar = () => {
               </span>
             )}
           </button>
-          <Link
-            to="/login"
-            className="hidden md:block btn-primary text-sm !py-2 !px-5"
-          >
-            Sign In
-          </Link>
+
+          {/* ✅ REPLACED SIGN IN LOGIC */}
+          {user ? (
+            <div className="hidden md:flex items-center gap-3">
+              <Link
+                to="/orders"
+                className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 transition-colors"
+              >
+                My Orders
+              </Link>
+              <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                Hi, {user.name?.split(" ")[0]}
+              </span>
+              <button onClick={logout} className="btn-outline text-sm !py-2 !px-5">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="hidden md:block btn-primary text-sm !py-2 !px-5">
+              Sign In
+            </Link>
+          )}
+
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
@@ -112,9 +132,20 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <Link to="/login" className="btn-primary text-center mt-2">
-              Sign In
-            </Link>
+
+            {/* ✅ MOBILE AUTH */}
+            {user ? (
+              <button
+                onClick={logout}
+                className="btn-outline text-center mt-2"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to="/login" className="btn-primary text-center mt-2">
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       )}
