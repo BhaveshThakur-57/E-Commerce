@@ -20,6 +20,7 @@ frontend/node_modules
 # Env files (VERY IMPORTANT)
 # ======================
 .env
+.env.*
 backend/.env
 frontend/.env
 
@@ -48,3 +49,8 @@ frontend/dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# misc
+coverage
+*.zip
+*.tar
