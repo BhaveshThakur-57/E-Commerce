@@ -1,8 +1,45 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Package, ArrowRight } from "lucide-react";
+import { Package, ArrowRight, Truck, ShoppingBag, Star } from "lucide-react";
 import { getMyOrdersAPI } from "../services/orderService";
+import { downloadInvoiceAPI } from "../services/invoiceService";
 import Loader from "../components/Loader";
+import { cancelOrderAPI } from "../services/orderService";
+
+const TRACKING_STEPS = ["processing", "shipped", "delivered"];
+
+const TrackingMini = ({ orderStatus }) => {
+  const currentIndex = TRACKING_STEPS.indexOf(orderStatus);
+  const isCancelled = orderStatus === "cancelled";
+
+  if (isCancelled) {
+    return (
+      <span className="text-xs text-red-500 font-medium">❌ Cancelled</span>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1 mt-2">
+      {TRACKING_STEPS.map((step, i) => (
+        <div key={step} className="flex items-center gap-1">
+          <div
+            className={`w-2 h-2 rounded-full transition-all ${
+              i <= currentIndex ? "bg-brand-500" : "bg-zinc-300 dark:bg-zinc-600"
+            }`}
+          />
+          {i < TRACKING_STEPS.length - 1 && (
+            <div
+              className={`h-0.5 w-6 transition-all ${
+                i < currentIndex ? "bg-brand-500" : "bg-zinc-200 dark:bg-zinc-700"
+              }`}
+            />
+          )}
+        </div>
+      ))}
+      <span className="text-xs text-zinc-500 ml-1 capitalize">{orderStatus}</span>
+    </div>
+  );
+};
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -71,6 +108,7 @@ const OrderHistory = () => {
                         year: "numeric",
                       })}
                     </p>
+                    <TrackingMini orderStatus={order.orderStatus} />
                   </div>
                   <div className="flex gap-2">
                     <span className={`text-xs px-3 py-1 rounded-full font-medium capitalize ${statusColor(order.orderStatus)}`}>
@@ -106,15 +144,54 @@ const OrderHistory = () => {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <p className="font-bold">
-                    ₹{order.totalPrice.toLocaleString("en-IN")}
-                  </p>
-                  <Link
-                    to={`/order-success/${order._id}`}
-                    className="text-sm text-brand-500 font-semibold flex items-center gap-1 hover:gap-2 transition-all"
-                  >
-                    View Details <ArrowRight size={14} />
-                  </Link>
+                  <div>
+                    <p className="font-bold">
+                      ₹{order.totalPrice.toLocaleString("en-IN")}
+                    </p>
+                    {order.discountAmount > 0 && (
+                      <p className="text-xs text-green-500 mt-0.5">
+                        Saved ₹{order.discountAmount} {order.couponCode && `(${order.couponCode})`}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {order.paymentStatus === "paid" && (
+                      <button
+                        onClick={() => downloadInvoiceAPI(order._id)}
+                        className="text-sm text-zinc-500 hover:text-brand-500 transition-colors flex items-center gap-1"
+                      >
+                        📄 Invoice
+                      </button>
+                    )}
+
+                    {order.orderStatus !== "cancelled" && order.orderStatus !== "delivered" && (
+                      <button
+                        onClick={async () => {
+                          if (!window.confirm("Cancel this order?")) return;
+                          try {
+                            await cancelOrderAPI(order._id);
+                            setOrders((prev) =>
+                              prev.map((o) =>
+                                o._id === order._id ? { ...o, orderStatus: "cancelled" } : o
+                              )
+                            );
+                          } catch (err) {
+                            alert(err?.response?.data?.message || "Failed to cancel");
+                          }
+                        }}
+                        className="text-sm text-red-400 hover:text-red-500 font-medium transition-colors"
+                      >
+                        Cancel Order
+                      </button>
+                    )}
+
+                    <Link
+                      to={`/order-success/${order._id}`}
+                      className="text-sm text-brand-500 font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+                    >
+                      View Details <ArrowRight size={14} />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}

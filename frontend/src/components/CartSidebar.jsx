@@ -1,10 +1,19 @@
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CartSidebar = () => {
-  const { items, isOpen, toggleCart, removeItem, updateQty, totalItems, totalPrice, loading } = useCart();
+  const {
+    items,
+    isOpen,
+    toggleCart,
+    removeItem,
+    updateQty,
+    totalItems,
+    totalPrice,
+    loading,
+  } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -13,7 +22,7 @@ const CartSidebar = () => {
     if (!user) {
       navigate("/login");
     } else {
-      navigate("/cart");
+      navigate("/checkout");
     }
   };
 
@@ -69,7 +78,7 @@ const CartSidebar = () => {
           ) : (
             items.map((item) => (
               <div
-                key={item.product}
+                key={item._id}
                 className="flex gap-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 group"
               >
                 <img
@@ -81,20 +90,44 @@ const CartSidebar = () => {
                   }}
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm line-clamp-1 mb-1">{item.name}</h4>
-                  <p className="text-brand-500 font-bold text-sm mb-3">
+                  <h4 className="font-medium text-sm line-clamp-1 mb-1">
+                    {item.name}
+                  </h4>
+
+                  {/* Size & Color */}
+                  <div className="flex items-center gap-2 mb-2">
+                    {item.size && (
+                      <span className="text-xs bg-zinc-200 dark:bg-zinc-700 px-2 py-0.5 rounded font-medium">
+                        {item.size}
+                      </span>
+                    )}
+                    {item.color && (
+                      <div className="flex items-center gap-1">
+                        <div
+                          className="w-3 h-3 rounded-full border border-zinc-300"
+                          style={{ backgroundColor: item.colorCode || item.color }}
+                        />
+                        <span className="text-xs text-zinc-400">{item.color}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-brand-500 font-bold text-sm mb-2">
                     ₹{(item.price * item.qty).toLocaleString("en-IN")}
                   </p>
+
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => updateQty(item.product, item.qty - 1)}
+                      onClick={() => updateQty(item._id, item.qty - 1)}
                       className="w-7 h-7 rounded-full bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 flex items-center justify-center hover:border-brand-400 hover:text-brand-500 transition-colors"
                     >
                       <Minus size={12} />
                     </button>
-                    <span className="w-8 text-center text-sm font-semibold">{item.qty}</span>
+                    <span className="w-8 text-center text-sm font-semibold">
+                      {item.qty}
+                    </span>
                     <button
-                      onClick={() => updateQty(item.product, item.qty + 1)}
+                      onClick={() => updateQty(item._id, item.qty + 1)}
                       disabled={item.qty >= item.stock}
                       className="w-7 h-7 rounded-full bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 flex items-center justify-center hover:border-brand-400 hover:text-brand-500 transition-colors disabled:opacity-40"
                     >
@@ -103,7 +136,7 @@ const CartSidebar = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => removeItem(item.product)}
+                  onClick={() => removeItem(item._id)}
                   className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-fit text-zinc-400 hover:text-red-500"
                 >
                   <Trash2 size={15} />

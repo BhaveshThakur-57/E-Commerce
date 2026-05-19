@@ -7,13 +7,8 @@ const getProducts = async (req, res) => {
     const { category, search, sort } = req.query;
     let query = {};
 
-    if (category && category !== "All") {
-      query.category = category;
-    }
-
-    if (search) {
-      query.name = { $regex: search, $options: "i" };
-    }
+    if (category && category !== "All") query.category = category;
+    if (search) query.name = { $regex: search, $options: "i" };
 
     let products = Product.find(query);
 
@@ -47,7 +42,10 @@ const getProductById = async (req, res) => {
 // @route   POST /api/products
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, image, category, stock } = req.body;
+    const {
+      name, description, price, image,
+      images, category, variants, stock,
+    } = req.body;
 
     if (!name || !description || !price || !category) {
       return res.status(400).json({ message: "All fields are required" });
@@ -58,7 +56,9 @@ const createProduct = async (req, res) => {
       description,
       price,
       image: image || `https://picsum.photos/seed/${Date.now()}/400/500`,
+      images: images || [],
       category,
+      variants: variants || [],
       stock: stock || 0,
     });
 
@@ -77,14 +77,19 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const { name, description, price, image, category, stock } = req.body;
+    const {
+      name, description, price, image,
+      images, category, variants, stock,
+    } = req.body;
 
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price ?? product.price;
     product.image = image || product.image;
+    product.images = images !== undefined ? images : product.images;
     product.category = category || product.category;
     product.stock = stock ?? product.stock;
+    if (variants !== undefined) product.variants = variants;
 
     const updated = await product.save();
     res.json(updated);

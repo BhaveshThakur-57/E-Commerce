@@ -8,14 +8,22 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
 
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">N</span>
+                <span className="text-white font-bold text-sm">A</span>
               </div>
-              <span className="font-display text-xl font-bold text-white">NEXUS</span>
+              <div>
+                <span className="font-display text-xl font-bold text-white block leading-none">
+                  AURAWEAR
+                </span>
+                <span className="text-xs text-zinc-500 leading-none">
+                  Wear Your Aura
+                </span>
+              </div>
             </div>
-            <p className="text-sm leading-relaxed mb-6">
-              Modern fashion for the modern soul. Curated collections that make you stand out.
+            <p className="text-sm leading-relaxed mb-6 mt-3">
+              Clothing that speaks your vibe. Premium quality streetwear
+              crafted for those who wear their aura.
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-brand-500 hover:text-white transition-all duration-200 text-xs font-bold">
@@ -81,7 +89,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-zinc-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
-          <p>2025 NEXUS. All rights reserved.</p>
+          <p>2025 AURAWEAR. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-white transition-colors">Privacy</a>
             <a href="#" className="hover:text-white transition-colors">Terms</a>

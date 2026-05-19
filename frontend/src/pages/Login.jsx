@@ -57,7 +57,7 @@ const Login = () => {
               <span className="text-white font-bold">N</span>
             </div>
             <span className="font-display text-2xl font-bold gradient-text">
-              NEXUS
+              AURAWEAR
             </span>
           </Link>
           <h1 className="font-display text-3xl font-bold mb-2">

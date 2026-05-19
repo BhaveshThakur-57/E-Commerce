@@ -11,8 +11,8 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getCart);
 router.post("/", protect, addToCart);
-router.put("/:productId", protect, updateCartItem);
+router.put("/:itemId", protect, updateCartItem);
 router.delete("/clear", protect, clearCart);
-router.delete("/:productId", protect, removeFromCart);
+router.delete("/:itemId", protect, removeFromCart);
 
 module.exports = router;

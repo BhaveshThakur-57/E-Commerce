@@ -34,7 +34,6 @@ export const CartProvider = ({ children }) => {
 
   const { user } = useAuth();
 
-  // Fetch cart when user logs in
   useEffect(() => {
     if (user) {
       fetchCart();
@@ -53,28 +52,27 @@ export const CartProvider = ({ children }) => {
     }
   };
 
- const addItem = async (product, qty = 1) => {
-  try {
-    const productId = product._id || product.product;
-    const data = await addToCartAPI(productId, qty);
-    dispatch({ type: "SET_CART", payload: data.items || [] });
-  } catch (err) {
-    console.error(err.response?.data?.message || "Failed to add item");
-  }
-};
-
-  const removeItem = async (productId) => {
+  const addItem = async (product, qty = 1, size = "", color = "", colorCode = "") => {
     try {
-      const data = await removeFromCartAPI(productId);
+      const data = await addToCartAPI(product._id, qty, size, color, colorCode);
+      dispatch({ type: "SET_CART", payload: data.items || [] });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const removeItem = async (itemId) => {
+    try {
+      const data = await removeFromCartAPI(itemId);
       dispatch({ type: "SET_CART", payload: data.items || [] });
     } catch (err) {
       console.error("Failed to remove item");
     }
   };
 
-  const updateQty = async (productId, qty) => {
+  const updateQty = async (itemId, qty) => {
     try {
-      const data = await updateCartItemAPI(productId, qty);
+      const data = await updateCartItemAPI(itemId, qty);
       dispatch({ type: "SET_CART", payload: data.items || [] });
     } catch (err) {
       console.error("Failed to update quantity");
@@ -93,7 +91,10 @@ export const CartProvider = ({ children }) => {
   const toggleCart = () => dispatch({ type: "TOGGLE_CART" });
 
   const totalItems = state.items.reduce((sum, i) => sum + i.qty, 0);
-  const totalPrice = state.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const totalPrice = state.items.reduce(
+    (sum, i) => sum + i.price * i.qty,
+    0
+  );
 
   return (
     <CartContext.Provider

@@ -12,6 +12,12 @@ const orderItemSchema = new mongoose.Schema({
   qty: { type: Number, required: true },
 });
 
+const trackingSchema = new mongoose.Schema({
+  status: { type: String, required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -19,10 +25,7 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    orderId: {
-      type: String,
-      unique: true,
-    },
+    orderId: { type: String, unique: true },
     items: [orderItemSchema],
     shippingAddress: {
       fullName: { type: String, required: true },
@@ -35,6 +38,8 @@ const orderSchema = new mongoose.Schema(
     subtotal: { type: Number, required: true },
     tax: { type: Number, required: true },
     shippingCharge: { type: Number, default: 0 },
+    couponCode: { type: String, default: null },
+    discountAmount: { type: Number, default: 0 },
     totalPrice: { type: Number, required: true },
     paymentStatus: {
       type: String,
@@ -46,6 +51,8 @@ const orderSchema = new mongoose.Schema(
       enum: ["processing", "shipped", "delivered", "cancelled"],
       default: "processing",
     },
+    // Phase 14: Tracking history
+    trackingHistory: [trackingSchema],
     razorpayOrderId: { type: String },
     razorpayPaymentId: { type: String },
   },

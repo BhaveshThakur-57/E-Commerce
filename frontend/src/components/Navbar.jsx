@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag, Menu, X, Search, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext"; // ✅ ADDED
+import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { toggleCart, totalItems } = useCart();
-  const { user, logout } = useAuth(); // ✅ ADDED
+  const { user, logout } = useAuth();
+  const { wishlist } = useWishlist();
   const location = useLocation();
 
   useEffect(() => {
@@ -29,21 +31,25 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
-          ? "glass shadow-lg shadow-black/5 py-3"
-          : "bg-transparent py-5"
-        }`}
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrolled ? "glass shadow-lg shadow-black/5 py-3" : "bg-transparent py-5"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40 group-hover:scale-110 transition-transform duration-300">
-            <span className="text-white font-bold text-sm">N</span>
+            <span className="text-white font-bold text-sm">A</span>
           </div>
-          <span className="font-display text-xl font-bold gradient-text">
-            NEXUS
-          </span>
+          <div>
+            <span className="font-display text-xl font-bold gradient-text block leading-none">
+              AURAWEAR
+            </span>
+            <span className="text-xs text-zinc-400 dark:text-zinc-500 leading-none">
+              Wear Your Aura
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav Links */}
@@ -52,10 +58,11 @@ const Navbar = () => {
             <li key={link.label}>
               <Link
                 to={link.to}
-                className={`text-sm font-medium relative group transition-colors duration-200 ${location.pathname === link.to
+                className={`text-sm font-medium relative group transition-colors duration-200 ${
+                  location.pathname === link.to
                     ? "text-brand-500"
                     : "text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-400"
-                  }`}
+                }`}
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-400 group-hover:w-full transition-all duration-300 rounded-full" />
@@ -72,10 +79,20 @@ const Navbar = () => {
             <Search size={18} />
           </button>
 
-          <button className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500">
+          {/* Wishlist */}
+          <Link
+            to="/wishlist"
+            className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500 relative"
+          >
             <Heart size={18} />
-          </button>
+            {wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                {wishlist.length}
+              </span>
+            )}
+          </Link>
 
+          {/* Cart */}
           <button
             onClick={toggleCart}
             className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500"
@@ -88,18 +105,32 @@ const Navbar = () => {
             )}
           </button>
 
-          {/* ✅ REPLACED SIGN IN LOGIC */}
+          {/* Auth */}
           {user ? (
             <div className="hidden md:flex items-center gap-3">
+              {user?.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className="text-sm font-semibold text-brand-500 hover:text-brand-600 transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
               <Link
                 to="/orders"
                 className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 transition-colors"
               >
                 My Orders
               </Link>
-              <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+
+              {/* FIX: Hi, Name — ab profile pe jaata hai */}
+              <Link
+                to="/profile"
+                className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-brand-500 transition-colors"
+              >
                 Hi, {user.name?.split(" ")[0]}
-              </span>
+              </Link>
+
               <button onClick={logout} className="btn-outline text-sm !py-2 !px-5">
                 Logout
               </button>
@@ -133,14 +164,31 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {/* ✅ MOBILE AUTH */}
+            <Link
+              to="/wishlist"
+              className="text-zinc-700 dark:text-zinc-300 font-medium hover:text-brand-500 transition-colors py-2 border-b border-zinc-100 dark:border-zinc-800"
+            >
+              Wishlist {wishlist.length > 0 && `(${wishlist.length})`}
+            </Link>
+
             {user ? (
-              <button
-                onClick={logout}
-                className="btn-outline text-center mt-2"
-              >
-                Logout
-              </button>
+              <>
+                <Link
+                  to="/profile"
+                  className="text-zinc-700 dark:text-zinc-300 font-medium hover:text-brand-500 transition-colors py-2 border-b border-zinc-100 dark:border-zinc-800"
+                >
+                  Hi, {user.name?.split(" ")[0]} — Profile
+                </Link>
+                <Link
+                  to="/orders"
+                  className="text-zinc-700 dark:text-zinc-300 font-medium hover:text-brand-500 transition-colors py-2 border-b border-zinc-100 dark:border-zinc-800"
+                >
+                  My Orders
+                </Link>
+                <button onClick={logout} className="btn-outline text-center mt-2">
+                  Logout
+                </button>
+              </>
             ) : (
               <Link to="/login" className="btn-primary text-center mt-2">
                 Sign In
