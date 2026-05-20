@@ -17,8 +17,8 @@ const HeroSection = () => (
         </div>
 
         <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] animate-fade-up" style={{ animationDelay: "0.1s" }}>
-          Wear Your{" "}
-          <span className="gradient-text block">Aura</span>
+          Wear the{" "}
+          <span className="gradient-text block">Extraordinary</span>
         </h1>
 
         <p className="text-zinc-500 dark:text-zinc-400 text-lg leading-relaxed max-w-lg animate-fade-up" style={{ animationDelay: "0.2s" }}>
@@ -53,10 +53,10 @@ const HeroSection = () => (
       {/* Right Image Grid */}
       <div className="relative hidden lg:grid grid-cols-2 gap-4 animate-fade-in" style={{ animationDelay: "0.5s" }}>
         {[
-          { url: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80", cls: "h-72" },
-          { url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", cls: "h-52 mt-8" },
-          { url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80", cls: "h-52" },
-          { url: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80", cls: "h-72 -mt-8" },
+          { url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80", cls: "h-72" },
+          { url: "https://images.unsplash.com/photo-1434389678369-182cb14f1754?w=400&q=80", cls: "h-52 mt-8" },
+          { url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80", cls: "h-52" },
+          { url: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&q=80", cls: "h-72 -mt-8" },
         ].map(({ url, cls }, i) => (
           <div key={url} className={`${cls} rounded-2xl overflow-hidden animate-fade-up`} style={{ animationDelay: `${i * 0.1}s` }}>
             <img

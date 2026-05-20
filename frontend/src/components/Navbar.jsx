@@ -26,8 +26,42 @@ const Navbar = () => {
     { label: "Home", to: "/" },
     { label: "Shop", to: "/shop" },
     { label: "Collections", to: "/shop?category=Featured" },
-    { label: "About", to: "#" },
+    { label: "About", to: "/about" },
   ];
+
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  if (isAdminRoute) {
+    return (
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          scrolled ? "glass shadow-lg shadow-black/5 py-3" : "bg-white/80 dark:bg-zinc-950/80 border-b border-zinc-100 dark:border-zinc-800 py-3"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+          <Link to="/admin" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40">
+              <span className="text-white font-bold text-sm">L</span>
+            </div>
+            <div>
+              <span className="font-display text-xl font-bold gradient-text block leading-none">LUXORA</span>
+              <span className="text-xs text-zinc-400 dark:text-zinc-500 leading-none">Admin Panel</span>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            {user && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Hi, {user.name?.split(" ")[0]}</span>
+                <button onClick={logout} className="btn-outline text-sm !py-2 !px-5">Logout</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav
@@ -40,14 +74,14 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40 group-hover:scale-110 transition-transform duration-300">
-            <span className="text-white font-bold text-sm">A</span>
+            <span className="text-white font-bold text-sm">L</span>
           </div>
           <div>
             <span className="font-display text-xl font-bold gradient-text block leading-none">
-              AURAWEAR
+              LUXORA
             </span>
             <span className="text-xs text-zinc-400 dark:text-zinc-500 leading-none">
-              Wear Your Aura
+              Wear the Extraordinary
             </span>
           </div>
         </Link>
@@ -108,14 +142,7 @@ const Navbar = () => {
           {/* Auth */}
           {user ? (
             <div className="hidden md:flex items-center gap-3">
-              {user?.role === "admin" && (
-                <Link
-                  to="/admin"
-                  className="text-sm font-semibold text-brand-500 hover:text-brand-600 transition-colors"
-                >
-                  Admin
-                </Link>
-              )}
+              
               <Link
                 to="/orders"
                 className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 transition-colors"

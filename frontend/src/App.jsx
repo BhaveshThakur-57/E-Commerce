@@ -22,7 +22,16 @@ import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import ChatBot from "./components/ChatBot";
 import Profile from "./pages/Profile";
-
+import FAQ from "./pages/FAQ";
+import Shipping from "./pages/Shipping";
+import Returns from "./pages/Returns";
+import SizeGuide from "./pages/SizeGuide";
+import About from "./pages/About";
+import Careers from "./pages/Careers";
+import Press from "./pages/Press";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 function App() {
   return (
     <ThemeProvider>
@@ -46,6 +55,16 @@ function App() {
                 <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                 <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
                 <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/shipping" element={<Shipping />} />
+                <Route path="/returns" element={<Returns />} />
+                <Route path="/size-guide" element={<SizeGuide />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/press" element={<Press />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
               </Routes>
               <Footer />
               <ChatBot />

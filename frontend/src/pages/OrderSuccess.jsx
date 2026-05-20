@@ -177,7 +177,7 @@ const OrderSuccess = () => {
             Order Placed! 🎉
           </h1>
           <p className="text-zinc-500">
-            Thank you for shopping with AURAWEAR! Your order is confirmed.
+            Thank you for shopping with LUXORA! Your order is confirmed.
           </p>
           {order && (
             <p className="text-brand-500 font-semibold mt-2">

@@ -16,13 +16,13 @@ const generateInvoice = (order, res) => {
   .fillColor("#ff0076")
   .fontSize(28)
   .font("Helvetica-Bold")
-  .text("AURAWEAR", 50, 50);
+  .text("LUXORA", 50, 50);
 
 doc
   .fillColor("#444")
   .fontSize(10)
   .font("Helvetica")
-  .text("Wear Your Aura", 50, 82)
+  .text("Wear the Extraordinary", 50, 82)
   .text("India", 50, 95);
 
   doc
@@ -202,12 +202,12 @@ doc
     .fillColor("#888")
     .fontSize(9)
     .font("Helvetica")
-    .text("Thank you for shopping with AURAWEAR!", 50, 715, {
+    .text("Thank you for shopping with LUXORA!", 50, 715, {
       align: "center",
       width: 500,
     })
     .text(
-      "For any queries, contact us at support@AURAWEAR.com",
+      "For any queries, contact us at support@LUXORA.com",
       50,
       730,
       { align: "center", width: 500 }

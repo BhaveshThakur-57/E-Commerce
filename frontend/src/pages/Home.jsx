@@ -7,11 +7,11 @@ import { getProductsAPI } from "../services/productService";
 import Loader from "../components/Loader";
 
 const CATEGORIES = [
-  { name: "Tops", emoji: "👕", count: 48 },
-  { name: "Bottoms", emoji: "👖", count: 32 },
-  { name: "Outerwear", emoji: "🧥", count: 24 },
-  { name: "Footwear", emoji: "👟", count: 56 },
-  { name: "Accessories", emoji: "👜", count: 80 },
+  { name: "Streetwear", emoji: "🔥", count: 48 },
+  { name: "Essentials", emoji: "✨", count: 32 },
+  { name: "Oversized Fits", emoji: "👕", count: 24 },
+  { name: "Urban Classics", emoji: "🏙️", count: 56 },
+  { name: "Summer Drop", emoji: "☀️", count: 80 },
 ];
 
 const Home = () => {

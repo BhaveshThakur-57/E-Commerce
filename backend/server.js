@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
@@ -24,6 +25,9 @@ app.use("/api/wishlist", require("./routes/wishlistRoutes"));
 app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/coupons", require("./routes/couponRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
+app.use("/api/upload", require("./routes/uploadRoutes"));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Error middleware
 app.use(require("./middleware/errorMiddleware"));

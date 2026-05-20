@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getDashboardStatsAPI } from "../../services/adminService";
 import Loader from "../../components/Loader";
+import AdminSidebar from "../../components/AdminSidebar";
 import {
   ShoppingBag, Users, Package, IndianRupee,
   TrendingUp, AlertTriangle, ArrowRight
@@ -64,16 +65,14 @@ const AdminDashboard = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
+    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <AdminSidebar />
+      <main className="flex-grow pt-28 pb-20 px-4 sm:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
-            <p className="text-brand-500 text-sm font-semibold uppercase tracking-widest mb-2">
-              Admin Panel
-            </p>
             <h1 className="font-display text-4xl font-bold">Dashboard</h1>
+            <p className="text-zinc-500 mt-1">LUXORA Store Overview</p>
           </div>
           <div className="flex gap-3">
             <Link to="/admin/products" className="btn-outline text-sm !py-2">
@@ -177,8 +176,8 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 };
 

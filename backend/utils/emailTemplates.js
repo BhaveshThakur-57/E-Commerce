@@ -28,8 +28,8 @@ const orderConfirmationEmail = (order, userName) => `
 <body>
   <div class="container">
     <div class="header">
-      <h1>AURAWEAR</h1>
-      <p>Wear Your Aura</p>
+      <h1>LUXORA</h1>
+      <p>Wear the Extraordinary</p>
     </div>
     <div class="body">
       <p class="greeting">Hi ${userName}! 👋</p>
@@ -78,7 +78,7 @@ const orderConfirmationEmail = (order, userName) => `
       </p>
     </div>
     <div class="footer">
-      <p>© 2025 AURAWEAR. All rights reserved.</p>
+      <p>© 2025 LUXORA. All rights reserved.</p>
       <p>Made with ❤️ in India</p>
     </div>
   </div>
@@ -105,8 +105,8 @@ const orderCancelledEmail = (order, userName) => `
 <body>
   <div class="container">
     <div class="header">
-      <h1>AURAWEAR</h1>
-      <p>Wear Your Aura</p>
+      <h1>LUXORA</h1>
+      <p>Wear the Extraordinary</p>
     </div>
     <div class="body">
       <p style="font-size:18px;color:#333;">Hi ${userName},</p>
@@ -121,7 +121,7 @@ const orderCancelledEmail = (order, userName) => `
       <p style="color:#888;font-size:13px;margin-top:20px;">Questions? Contact us at support@aurawear.com</p>
     </div>
     <div class="footer">
-      <p>© 2025 AURAWEAR. All rights reserved.</p>
+      <p>© 2025 LUXORA. All rights reserved.</p>
     </div>
   </div>
 </body>

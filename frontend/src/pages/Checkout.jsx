@@ -122,7 +122,7 @@ const Checkout = () => {
         key: razorpayData.keyId,
         amount: razorpayData.amount,
         currency: razorpayData.currency,
-        name: "AURAWEAR Store",
+        name: "LUXORA Store",
         description: `Order ${order.orderId}`,
         order_id: razorpayData.razorpayOrderId,
         prefill: {

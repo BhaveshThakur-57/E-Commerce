@@ -5,7 +5,7 @@ import { SlidersHorizontal, Search, X } from "lucide-react";
 import { getProductsAPI } from "../services/productService";
 import { smartSearchAPI } from "../services/aiService";
 
-const CATEGORIES = ["All", "Tops", "Bottoms", "Outerwear", "Footwear", "Accessories"];
+const CATEGORIES = ["All", "Streetwear", "Essentials", "Oversized Fits", "Urban Classics", "Summer Drop", "Winter Layers", "Premium Cotton", "Limited Edition"];
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const SORT_OPTIONS = [
   { value: "featured", label: "Featured" },

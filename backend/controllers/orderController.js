@@ -69,7 +69,7 @@ const createOrder = async (req, res) => {
       const user = await User.findById(req.user._id);
       await sendEmail({
         to: user.email,
-        subject: `Order Confirmed — ${order.orderId} | AURAWEAR`,
+        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
         html: orderConfirmationEmail(order, user.name),
       });
     } catch (emailErr) {
@@ -170,7 +170,7 @@ const cancelOrder = async (req, res) => {
       const user = await User.findById(req.user._id);
       await sendEmail({
         to: user.email,
-        subject: `Order Cancelled — ${order.orderId} | AURAWEAR`,
+        subject: `Order Cancelled — ${order.orderId} | LUXORA`,
         html: orderCancelledEmail(order, user.name),
       });
     } catch (emailErr) {

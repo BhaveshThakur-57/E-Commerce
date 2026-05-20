@@ -45,7 +45,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "Category is required"],
-      enum: ["Tops", "Bottoms", "Outerwear", "Footwear", "Accessories"],
+      enum: ["Streetwear", "Essentials", "Oversized Fits", "Urban Classics", "Summer Drop", "Winter Layers", "Premium Cotton", "Limited Edition"],
     },
     variants: [variantSchema],
     stock: { type: Number, default: 0 },

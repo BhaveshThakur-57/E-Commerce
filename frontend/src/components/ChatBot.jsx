@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 import { sendMessageAPI } from "../services/chatService";
 
 const ChatBot = () => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  if (location.pathname.startsWith("/admin")) return null;
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      text: "Hi! 👋 I'm AURAWEAR Assistant. How can I help you today?",
+      text: "Hi! 👋 I'm LUXORA Assistant. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -50,10 +54,10 @@ const ChatBot = () => {
   };
 
   const quickQuestions = [
-    "What products do you sell?",
-    "Free shipping available?",
-    "Return policy?",
-    "Payment methods?",
+    "Size guide help",
+    "Oversized fits?",
+    "Fabric quality?",
+    "Styling suggestions",
   ];
 
   return (
@@ -69,7 +73,7 @@ const ChatBot = () => {
                 <Bot size={18} className="text-white" />
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">AURAWEAR Assistant</p>
+                <p className="text-white font-semibold text-sm">LUXORA Assistant</p>
                 <p className="text-white/70 text-xs">Powered by Gemini AI</p>
               </div>
             </div>

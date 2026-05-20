@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllOrdersAdminAPI, updateOrderStatusAPI } from "../../services/adminService";
 import Loader from "../../components/Loader";
+import AdminSidebar from "../../components/AdminSidebar";
 
 const ORDER_STATUSES = ["processing", "shipped", "delivered", "cancelled"];
 
@@ -57,13 +58,12 @@ const AdminOrders = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <AdminSidebar />
+      <main className="flex-grow pt-28 pb-20 px-4 sm:px-8">
 
         <div className="mb-10">
-          <p className="text-brand-500 text-sm font-semibold uppercase tracking-widest mb-2">
-            Admin Panel
-          </p>
+
           <h1 className="font-display text-4xl font-bold">Orders</h1>
           <p className="text-zinc-500 mt-1">{orders.length} total orders</p>
         </div>
@@ -153,8 +153,8 @@ const AdminOrders = () => {
             </div>
           </div>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 };
 
