@@ -64,11 +64,11 @@ const ProductDetail = () => {
         setProduct(data);
         setActiveImg(0);
         if (data.variants && data.variants.length > 0) setSelectedColor(data.variants[0]);
+        // Fetch reviews and recommendations in parallel
         fetchReviews(data._id);
-        try {
-          const recs = await getRecommendationsAPI(data._id);
-          setRecommendations(recs);
-        } catch { console.error("Recommendations failed"); }
+        getRecommendationsAPI(data._id)
+          .then((recs) => setRecommendations(recs))
+          .catch(() => console.error("Recommendations failed"));
       } catch { setError("Product not found"); }
       finally { setLoading(false); }
     };
@@ -215,7 +215,14 @@ const ProductDetail = () => {
           {/* Product Info */}
           <div className="flex flex-col justify-center space-y-6">
             <div>
-              <p className="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-2">{product.category}</p>
+              <p className="text-brand-500 font-semibold text-sm uppercase tracking-widest mb-2">
+                {product.category}
+                {product.collections && product.collections.length > 0 && (
+                  <span className="text-zinc-400 font-normal ml-2">
+                    • {product.collections.join(" • ")}
+                  </span>
+                )}
+              </p>
               <h1 className="font-display text-4xl font-bold mb-3">{product.name}</h1>
               <div className="flex items-center gap-3 mb-4">
                 <StarRating rating={Math.round(product.rating)} readonly size={16} />

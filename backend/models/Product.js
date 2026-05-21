@@ -45,8 +45,12 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "Category is required"],
-      enum: ["Streetwear", "Essentials", "Oversized Fits", "Urban Classics", "Summer Drop", "Winter Layers", "Premium Cotton", "Limited Edition"],
+      enum: ["T-Shirts", "Shirts", "Oversized", "Bottomwear", "Sportswear", "Jackets", "Formal Wear", "Ethnic Wear", "Socks", "Clothing"],
     },
+    collections: [{
+      type: String,
+      enum: ["New Arrivals", "Streetwear", "Oversized Fits", "Casual Fits", "Gym Essentials", "Summer Wear", "Winter Layers", "Office Wear", "Limited Drop"],
+    }],
     variants: [variantSchema],
     stock: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },

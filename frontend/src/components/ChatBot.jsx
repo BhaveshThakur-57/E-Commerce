@@ -6,8 +6,6 @@ import { sendMessageAPI } from "../services/chatService";
 const ChatBot = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-
-  if (location.pathname.startsWith("/admin")) return null;
   const [messages, setMessages] = useState([
     {
       role: "bot",
@@ -22,10 +20,13 @@ const ChatBot = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+  // Must be after all hooks
+  if (location.pathname.startsWith("/admin")) return null;
 
-    const userMessage = input.trim();
+  const sendMessage = async (msg) => {
+    if (!msg.trim() || loading) return;
+
+    const userMessage = msg.trim();
     setInput("");
     setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
     setLoading(true);
@@ -45,6 +46,8 @@ const ChatBot = () => {
       setLoading(false);
     }
   };
+
+  const handleSend = () => sendMessage(input);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -142,10 +145,7 @@ const ChatBot = () => {
               {quickQuestions.map((q) => (
                 <button
                   key={q}
-                  onClick={() => {
-                    setInput(q);
-                    setTimeout(() => handleSend(), 100);
-                  }}
+                  onClick={() => sendMessage(q)}
                   className="text-xs bg-brand-500/10 text-brand-500 px-3 py-1.5 rounded-full hover:bg-brand-500 hover:text-white transition-all"
                 >
                   {q}

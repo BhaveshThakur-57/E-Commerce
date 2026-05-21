@@ -74,7 +74,7 @@ const orderConfirmationEmail = (order, userName) => `
       <span class="badge">${order.paymentStatus.toUpperCase()}</span>
 
       <p style="margin-top:25px;color:#888;font-size:13px;">
-        If you have any questions, reply to this email or contact us at support@aurawear.com
+        If you have any questions, reply to this email or contact us at support@luxorawear.com
       </p>
     </div>
     <div class="footer">
@@ -118,7 +118,7 @@ const orderCancelledEmail = (order, userName) => `
           ? `<p style="color:#22c55e;font-size:14px;font-weight:bold;">✅ Refund will be processed within 5-7 business days.</p>`
           : ""
       }
-      <p style="color:#888;font-size:13px;margin-top:20px;">Questions? Contact us at support@aurawear.com</p>
+      <p style="color:#888;font-size:13px;margin-top:20px;">Questions? Contact us at support@luxorawear.com</p>
     </div>
     <div class="footer">
       <p>© 2025 LUXORA. All rights reserved.</p>
@@ -128,4 +128,84 @@ const orderCancelledEmail = (order, userName) => `
 </html>
 `;
 
-module.exports = { orderConfirmationEmail, orderCancelledEmail };
+const paymentPendingEmail = (order, userName) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 30px auto; background: white; border-radius: 12px; overflow: hidden; }
+    .header { background: linear-gradient(135deg, #f59e0b, #d97706); padding: 30px; text-align: center; }
+    .header h1 { color: white; margin: 0; font-size: 28px; letter-spacing: 2px; }
+    .header p { color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 13px; }
+    .body { padding: 30px; }
+    .order-id { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px; margin: 20px 0; font-weight: bold; color: #d97706; }
+    .footer { background: #1a1a1a; padding: 20px; text-align: center; color: #888; font-size: 12px; }
+    .badge { display: inline-block; background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>LUXORA</h1>
+      <p>Wear the Extraordinary</p>
+    </div>
+    <div class="body">
+      <p style="font-size:18px;color:#333;">Hi ${userName}! ⏳</p>
+      <p style="color:#555;font-size:14px;">Your order has been received but payment is still pending. Please complete your payment to confirm the order.</p>
+      <div class="order-id">Order ID: ${order.orderId}</div>
+      <p style="color:#555;font-size:14px;">Total: ₹${order.totalPrice.toLocaleString("en-IN")}</p>
+      <span class="badge">PAYMENT PENDING</span>
+      <p style="color:#888;font-size:13px;margin-top:25px;">If you have any questions, contact us at support@luxorawear.com</p>
+    </div>
+    <div class="footer">
+      <p>© 2025 LUXORA. All rights reserved.</p>
+      <p>Made with ❤️ in India</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+const paymentFailedEmail = (order, userName) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 30px auto; background: white; border-radius: 12px; overflow: hidden; }
+    .header { background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 30px; text-align: center; }
+    .header h1 { color: white; margin: 0; font-size: 28px; letter-spacing: 2px; }
+    .header p { color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 13px; }
+    .body { padding: 30px; }
+    .order-id { background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 4px; margin: 20px 0; font-weight: bold; color: #ef4444; }
+    .footer { background: #1a1a1a; padding: 20px; text-align: center; color: #888; font-size: 12px; }
+    .badge { display: inline-block; background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>LUXORA</h1>
+      <p>Wear the Extraordinary</p>
+    </div>
+    <div class="body">
+      <p style="font-size:18px;color:#333;">Hi ${userName},</p>
+      <p style="color:#555;font-size:14px;">Unfortunately, the payment for your order could not be processed. Please try again or use a different payment method.</p>
+      <div class="order-id">Order ID: ${order.orderId}</div>
+      <p style="color:#555;font-size:14px;">Total: ₹${order.totalPrice.toLocaleString("en-IN")}</p>
+      <span class="badge">PAYMENT FAILED</span>
+      <p style="color:#888;font-size:13px;margin-top:25px;">Need help? Contact us at support@luxorawear.com</p>
+    </div>
+    <div class="footer">
+      <p>© 2025 LUXORA. All rights reserved.</p>
+      <p>Made with ❤️ in India</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+module.exports = { orderConfirmationEmail, orderCancelledEmail, paymentPendingEmail, paymentFailedEmail };

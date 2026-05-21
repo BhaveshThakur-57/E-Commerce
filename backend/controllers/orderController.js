@@ -4,7 +4,7 @@ const Cart = require("../models/Cart");
 const Coupon = require("../models/Coupon");
 const generateOrderId = require("../utils/generateOrderId");
 const sendEmail = require("../utils/sendEmail");
-const { orderConfirmationEmail, orderCancelledEmail } = require("../utils/emailTemplates");
+const { orderConfirmationEmail, orderCancelledEmail, paymentPendingEmail } = require("../utils/emailTemplates");
 const User = require("../models/User");
 
 const createOrder = async (req, res) => {
@@ -64,13 +64,13 @@ const createOrder = async (req, res) => {
       }],
     });
 
-    // Email send karo
+    // Send payment pending email (confirmation only after payment)
     try {
       const user = await User.findById(req.user._id);
       await sendEmail({
         to: user.email,
-        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
-        html: orderConfirmationEmail(order, user.name),
+        subject: `Payment Pending — ${order.orderId} | LUXORA`,
+        html: paymentPendingEmail(order, user.name),
       });
     } catch (emailErr) {
       console.error("Order email failed:", emailErr.message);

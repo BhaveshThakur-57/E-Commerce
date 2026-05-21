@@ -61,6 +61,7 @@ const HeroSection = () => (
           <div key={url} className={`${cls} rounded-2xl overflow-hidden animate-fade-up`} style={{ animationDelay: `${i * 0.1}s` }}>
             <img
               src={url}
+              loading="lazy"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               alt=""
             />

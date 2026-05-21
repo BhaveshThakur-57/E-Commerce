@@ -33,6 +33,8 @@ export default {
         "float": "float 3s ease-in-out infinite",
         "shimmer": "shimmer 1.5s infinite",
         "scale-in": "scaleIn 0.3s ease forwards",
+        "pulse-glow": "pulseGlow 2s ease-in-out infinite",
+        "slide-up": "slideUp 0.5s ease forwards",
       },
       keyframes: {
         fadeUp: {
@@ -58,6 +60,14 @@ export default {
         scaleIn: {
           "0%": { opacity: 0, transform: "scale(0.95)" },
           "100%": { opacity: 1, transform: "scale(1)" },
+        },
+        pulseGlow: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(14, 165, 233, 0)" },
+          "50%": { boxShadow: "0 0 20px 5px rgba(14, 165, 233, 0.15)" },
+        },
+        slideUp: {
+          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
         },
       },
     },

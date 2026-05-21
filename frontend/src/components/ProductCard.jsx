@@ -60,6 +60,7 @@ const ProductCard = ({ product, index = 0 }) => {
         <img
           src={product.image}
           alt={product.name}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {
             e.target.src = `https://picsum.photos/seed/${product._id}/400/500`;
@@ -68,7 +69,7 @@ const ProductCard = ({ product, index = 0 }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Stock Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 z-10">
           {product.stock === 0 && !hasVariants && (
             <span className="bg-zinc-800 text-white text-xs px-2.5 py-1 rounded-full font-semibold">
               Sold Out
@@ -86,8 +87,8 @@ const ProductCard = ({ product, index = 0 }) => {
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 translate-x-10 group-hover:translate-x-0 transition-transform duration-300">
+        {/* Action Buttons - fixed clipping */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 z-10">
           {/* Wishlist Heart — real toggle */}
           <button
             onClick={handleWishlist}
@@ -111,7 +112,7 @@ const ProductCard = ({ product, index = 0 }) => {
         </div>
 
         {/* Add to Cart Button */}
-        <div className="absolute bottom-4 left-4 right-4 translate-y-10 group-hover:translate-y-0 transition-transform duration-300">
+        <div className="absolute bottom-4 left-4 right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
           <button
             onClick={handleAdd}
             disabled={(!hasVariants && product.stock === 0) || loading}

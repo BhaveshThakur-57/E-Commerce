@@ -4,10 +4,11 @@ const Product = require("../models/Product");
 // @route   GET /api/products
 const getProducts = async (req, res) => {
   try {
-    const { category, search, sort } = req.query;
+    const { category, collection, search, sort } = req.query;
     let query = {};
 
     if (category && category !== "All") query.category = category;
+    if (collection && collection !== "All") query.collections = collection;
     if (search) query.name = { $regex: search, $options: "i" };
 
     let products = Product.find(query);
@@ -44,7 +45,7 @@ const createProduct = async (req, res) => {
   try {
     const {
       name, description, price, image,
-      images, category, variants, stock,
+      images, category, collections, variants, stock,
     } = req.body;
 
     if (!name || !description || !price || !category) {
@@ -58,6 +59,7 @@ const createProduct = async (req, res) => {
       image: image || `https://picsum.photos/seed/${Date.now()}/400/500`,
       images: images || [],
       category,
+      collections: collections || [],
       variants: variants || [],
       stock: stock || 0,
     });
@@ -79,7 +81,7 @@ const updateProduct = async (req, res) => {
 
     const {
       name, description, price, image,
-      images, category, variants, stock,
+      images, category, collections, variants, stock,
     } = req.body;
 
     product.name = name || product.name;
@@ -88,6 +90,7 @@ const updateProduct = async (req, res) => {
     product.image = image || product.image;
     product.images = images !== undefined ? images : product.images;
     product.category = category || product.category;
+    if (collections !== undefined) product.collections = collections;
     product.stock = stock ?? product.stock;
     if (variants !== undefined) product.variants = variants;
 

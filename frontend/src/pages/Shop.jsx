@@ -5,7 +5,8 @@ import { SlidersHorizontal, Search, X } from "lucide-react";
 import { getProductsAPI } from "../services/productService";
 import { smartSearchAPI } from "../services/aiService";
 
-const CATEGORIES = ["All", "Streetwear", "Essentials", "Oversized Fits", "Urban Classics", "Summer Drop", "Winter Layers", "Premium Cotton", "Limited Edition"];
+const CATEGORIES = ["All", "T-Shirts", "Shirts", "Oversized", "Bottomwear", "Sportswear", "Jackets", "Formal Wear", "Ethnic Wear", "Socks"];
+const COLLECTIONS = ["All", "New Arrivals", "Streetwear", "Oversized Fits", "Casual Fits", "Gym Essentials", "Summer Wear", "Winter Layers", "Office Wear", "Limited Drop"];
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const SORT_OPTIONS = [
   { value: "featured", label: "Featured" },
@@ -20,6 +21,7 @@ const Shop = () => {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCollection, setActiveCollection] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
   const [priceRange, setPriceRange] = useState([0, 6000]);
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -27,13 +29,14 @@ const Shop = () => {
   const [aiSearchResults, setAiSearchResults] = useState(null);
   const [aiSearching, setAiSearching] = useState(false);
 
-  useEffect(() => { fetchProducts(); }, [activeCategory, sortBy]);
+  useEffect(() => { fetchProducts(); }, [activeCategory, activeCollection, sortBy]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const params = {};
       if (activeCategory !== "All") params.category = activeCategory;
+      if (activeCollection !== "All") params.collection = activeCollection;
       if (sortBy !== "featured") params.sort = sortBy;
       const data = await getProductsAPI(params);
       setProducts(data);
@@ -58,6 +61,7 @@ const Shop = () => {
   const clearFilters = () => {
     setSearch("");
     setActiveCategory("All");
+    setActiveCollection("All");
     setSortBy("featured");
     setPriceRange([0, 6000]);
     setSelectedSizes([]);
@@ -66,6 +70,7 @@ const Shop = () => {
 
   const activeFilterCount = [
     activeCategory !== "All",
+    activeCollection !== "All",
     priceRange[0] > 0 || priceRange[1] < 6000,
     selectedSizes.length > 0,
   ].filter(Boolean).length;
@@ -169,7 +174,7 @@ const Shop = () => {
         {/* Filter Panel */}
         {showFilters && (
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-6 mb-8 animate-fade-up">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
                 <p className="font-semibold text-sm mb-3">Category</p>
                 <div className="flex flex-wrap gap-2">
@@ -179,6 +184,19 @@ const Shop = () => {
                         activeCategory === cat ? "bg-brand-500 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-brand-500"
                       }`}>
                       {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold text-sm mb-3">Collection</p>
+                <div className="flex flex-wrap gap-2">
+                  {COLLECTIONS.filter(c => c !== "All").map((col) => (
+                    <button key={col} onClick={() => setActiveCollection(activeCollection === col ? "All" : col)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                        activeCollection === col ? "bg-brand-500 text-white shadow-md shadow-brand-500/20" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-brand-500"
+                      }`}>
+                      {col}
                     </button>
                   ))}
                 </div>
@@ -245,8 +263,13 @@ const Shop = () => {
         )}
 
         {/* Active Filter Tags */}
-        {(selectedSizes.length > 0 || priceRange[0] > 0 || priceRange[1] < 6000) && (
+        {(activeCollection !== "All" || selectedSizes.length > 0 || priceRange[0] > 0 || priceRange[1] < 6000) && (
           <div className="flex flex-wrap gap-2 mb-6">
+            {activeCollection !== "All" && (
+              <span className="flex items-center gap-1.5 bg-brand-500/10 text-brand-500 text-xs px-3 py-1.5 rounded-full font-medium">
+                Collection: {activeCollection} <button onClick={() => setActiveCollection("All")}><X size={12} /></button>
+              </span>
+            )}
             {selectedSizes.map((size) => (
               <span key={size} className="flex items-center gap-1.5 bg-brand-500/10 text-brand-500 text-xs px-3 py-1.5 rounded-full font-medium">
                 Size: {size} <button onClick={() => toggleSize(size)}><X size={12} /></button>

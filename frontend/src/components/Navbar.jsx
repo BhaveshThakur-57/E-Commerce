@@ -25,7 +25,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", to: "/" },
     { label: "Shop", to: "/shop" },
-    { label: "Collections", to: "/shop?category=Featured" },
+    { label: "Collections", to: "/collections" },
     { label: "About", to: "/about" },
   ];
 
@@ -66,7 +66,7 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled ? "glass shadow-lg shadow-black/5 py-3" : "bg-transparent py-5"
+        scrolled ? "bg-white/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-zinc-200/50 dark:border-zinc-800/50 py-3" : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -88,21 +88,26 @@ const Navbar = () => {
 
         {/* Desktop Nav Links */}
         <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <li key={link.label}>
-              <Link
-                to={link.to}
-                className={`text-sm font-medium relative group transition-colors duration-200 ${
-                  location.pathname === link.to
-                    ? "text-brand-500"
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-400"
-                }`}
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-400 group-hover:w-full transition-all duration-300 rounded-full" />
-              </Link>
-            </li>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.to || (link.to !== "/" && location.pathname.startsWith(link.to));
+            return (
+              <li key={link.label}>
+                <Link
+                  to={link.to}
+                  className={`text-sm font-medium relative group transition-colors duration-200 ${
+                    isActive
+                      ? "text-brand-500"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-400"
+                  }`}
+                >
+                  {link.label}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-brand-500 to-accent-400 rounded-full transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`} />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         {/* Right Icons */}

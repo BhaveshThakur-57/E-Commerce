@@ -31,7 +31,11 @@ import Careers from "./pages/Careers";
 import Press from "./pages/Press";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
+import ScrollToTop from "./components/ScrollToTop";
 import Terms from "./pages/Terms";
+import StoreLocator from "./pages/StoreLocator";
+import Collections from "./pages/Collections";
+
 function App() {
   return (
     <ThemeProvider>
@@ -39,11 +43,13 @@ function App() {
         <CartProvider>
           <WishlistProvider>
             <Router>
+              <ScrollToTop />
               <Navbar />
               <CartSidebar />
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
+                <Route path="/collections" element={<Collections />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
@@ -65,6 +71,7 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/store-locator" element={<StoreLocator />} />
               </Routes>
               <Footer />
               <ChatBot />

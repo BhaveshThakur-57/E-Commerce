@@ -6,8 +6,9 @@ import Loader from "../../components/Loader";
 import AdminSidebar from "../../components/AdminSidebar";
 import { Plus, Edit2, Trash2, X, Save, Upload } from "lucide-react";
 
-const CATEGORIES = ["Streetwear", "Essentials", "Oversized Fits", "Urban Classics", "Summer Drop", "Winter Layers", "Premium Cotton", "Limited Edition"];
-const emptyForm = { name: "", description: "", price: "", image: "", images: [], category: "Streetwear", stock: "", variants: [] };
+const CATEGORIES = ["T-Shirts", "Shirts", "Oversized", "Bottomwear", "Sportswear", "Jackets", "Formal Wear", "Ethnic Wear", "Socks"];
+const COLLECTIONS_LIST = ["New Arrivals", "Streetwear", "Oversized Fits", "Casual Fits", "Gym Essentials", "Summer Wear", "Winter Layers", "Office Wear", "Limited Drop"];
+const emptyForm = { name: "", description: "", price: "", image: "", images: [], category: "T-Shirts", collections: [], stock: "", variants: [] };
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -43,6 +44,7 @@ const AdminProducts = () => {
       image: product.image, 
       images: product.images || [], 
       category: product.category, 
+      collections: product.collections || [],
       stock: product.stock,
       variants: product.variants || []
     });
@@ -80,6 +82,8 @@ const AdminProducts = () => {
         image: primaryImage, 
         images: form.images || [],
         price: Number(form.price), 
+        category: form.category,
+        collections: form.collections || [],
         stock: computedStock,
         variants: form.variants || []
       };
@@ -178,10 +182,39 @@ const AdminProducts = () => {
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-400" />
                 </div>
 
-                <select name="category" value={form.category} onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-400">
-                  {CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block mb-2">Category (Select One)</label>
+                    <select name="category" value={form.category} onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-400">
+                      {CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block mb-2">Collections (Select Multiple)</label>
+                    <div className="flex flex-wrap gap-2">
+                      {COLLECTIONS_LIST.map((col) => (
+                        <button
+                          key={col}
+                          type="button"
+                          onClick={() => {
+                            const newCols = form.collections.includes(col)
+                              ? form.collections.filter(c => c !== col)
+                              : [...form.collections, col];
+                            setForm({ ...form, collections: newCols });
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                            form.collections.includes(col)
+                              ? "bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-500/20"
+                              : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-brand-400"
+                          }`}
+                        >
+                          {col}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
                 <div className="space-y-2">
                   <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Product Images</span>
@@ -371,10 +404,10 @@ const AdminProducts = () => {
                 <thead>
                   <tr className="border-b border-zinc-100 dark:border-zinc-800">
                     <th className="text-left p-4 text-sm font-semibold text-zinc-500">Product</th>
-                    <th className="text-left p-4 text-sm font-semibold text-zinc-500">Category</th>
-                    <th className="text-left p-4 text-sm font-semibold text-zinc-500">Price</th>
-                    <th className="text-left p-4 text-sm font-semibold text-zinc-500">Stock</th>
-                    <th className="text-left p-4 text-sm font-semibold text-zinc-500">Actions</th>
+                    <th className="text-left p-4 text-sm font-semibold text-zinc-500 whitespace-nowrap">Category & Collections</th>
+                    <th className="text-left p-4 text-sm font-semibold text-zinc-500 whitespace-nowrap">Price</th>
+                    <th className="text-left p-4 text-sm font-semibold text-zinc-500 whitespace-nowrap">Stock</th>
+                    <th className="text-left p-4 text-sm font-semibold text-zinc-500 whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -390,10 +423,22 @@ const AdminProducts = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="p-4"><span className="text-xs bg-brand-500/10 text-brand-500 px-2 py-1 rounded-full font-medium">{product.category}</span></td>
-                      <td className="p-4 font-semibold text-sm">₹{product.price.toLocaleString("en-IN")}</td>
-                      <td className="p-4">
-                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${product.stock === 0 ? "bg-red-100 text-red-600" : product.stock <= 5 ? "bg-orange-100 text-orange-600" : "bg-green-100 text-green-600"}`}>
+                      <td className="p-4 whitespace-nowrap">
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="text-xs bg-brand-500/10 text-brand-500 px-2 py-1 rounded-full font-medium">{product.category}</span>
+                          <div className="flex gap-1 flex-wrap mt-1">
+                            {product.collections && product.collections.slice(0, 2).map((col, idx) => (
+                              <span key={idx} className="text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">{col}</span>
+                            ))}
+                            {product.collections && product.collections.length > 2 && (
+                              <span className="text-[10px] text-zinc-400">+{product.collections.length - 2}</span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4 font-semibold text-sm whitespace-nowrap">₹{product.price.toLocaleString("en-IN")}</td>
+                      <td className="p-4 whitespace-nowrap">
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${product.stock === 0 ? "bg-red-100 text-red-600" : product.stock <= 5 ? "bg-orange-100 text-orange-600" : "bg-green-100 text-green-600"}`}>
                           {product.stock === 0 ? "Out of Stock" : `${product.stock} units`}
                         </span>
                       </td>

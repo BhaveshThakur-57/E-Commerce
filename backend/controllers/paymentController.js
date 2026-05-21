@@ -3,6 +3,9 @@ const crypto = require("crypto");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
+const User = require("../models/User");
+const sendEmail = require("../utils/sendEmail");
+const { orderConfirmationEmail, paymentFailedEmail } = require("../utils/emailTemplates");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -100,6 +103,18 @@ const verifyPayment = async (req, res) => {
       message: "Payment verified successfully",
       order,
     });
+
+    // Send Order Confirmed email after successful payment
+    try {
+      const user = await User.findById(req.user._id);
+      await sendEmail({
+        to: user.email,
+        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
+        html: orderConfirmationEmail(order, user.name),
+      });
+    } catch (emailErr) {
+      console.error("Confirmation email failed:", emailErr.message);
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -114,6 +129,20 @@ const paymentFailed = async (req, res) => {
     if (order) {
       order.paymentStatus = "failed";
       await order.save();
+
+      // Send payment failed email
+      try {
+        const user = await User.findById(order.user);
+        if (user) {
+          await sendEmail({
+            to: user.email,
+            subject: `Payment Failed — ${order.orderId} | LUXORA`,
+            html: paymentFailedEmail(order, user.name),
+          });
+        }
+      } catch (emailErr) {
+        console.error("Payment failed email error:", emailErr.message);
+      }
     }
     res.json({ message: "Payment marked as failed" });
   } catch (error) {
