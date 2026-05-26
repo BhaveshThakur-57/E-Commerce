@@ -9,8 +9,19 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+  ],
+  credentials: true
+}));
+
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("API Running");
+});
 
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
@@ -29,8 +40,10 @@ app.use("/api/upload", require("./routes/uploadRoutes"));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Error middleware
 app.use(require("./middleware/errorMiddleware"));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
