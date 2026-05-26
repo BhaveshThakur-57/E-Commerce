@@ -20,6 +20,7 @@ import Wishlist from "./pages/Wishlist";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
+import AdminCoupons from "./pages/Admin/AdminCoupons";
 import ChatBot from "./components/ChatBot";
 import Profile from "./pages/Profile";
 import FAQ from "./pages/FAQ";
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                 <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
                 <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+                <Route path="/admin/coupons" element={<AdminRoute><AdminCoupons /></AdminRoute>} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/shipping" element={<Shipping />} />
                 <Route path="/returns" element={<Returns />} />

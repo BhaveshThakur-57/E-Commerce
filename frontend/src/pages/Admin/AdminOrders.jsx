@@ -3,6 +3,8 @@ import { getAllOrdersAdminAPI, updateOrderStatusAPI } from "../../services/admin
 import Loader from "../../components/Loader";
 import AdminSidebar from "../../components/AdminSidebar";
 
+import { Download } from "lucide-react";
+
 const ORDER_STATUSES = ["processing", "shipped", "delivered", "cancelled"];
 
 const AdminOrders = () => {
@@ -40,6 +42,22 @@ const AdminOrders = () => {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = ["Order ID,Customer Name,Customer Email,Total Items,Total Price,Payment Status,Order Status,Date"];
+    const rows = orders.map(order => 
+      `${order.orderId},"${order.user?.name}","${order.user?.email}",${order.items?.length},${order.totalPrice},${order.paymentStatus},${order.orderStatus},${new Date(order.createdAt).toLocaleDateString()}`
+    );
+    
+    const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `luxora_orders_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const statusColor = (status) => {
     switch (status) {
       case "delivered": return "text-green-600";
@@ -62,10 +80,17 @@ const AdminOrders = () => {
       <AdminSidebar />
       <main className="flex-grow pt-28 pb-20 px-4 sm:px-8">
 
-        <div className="mb-10">
-
-          <h1 className="font-display text-4xl font-bold">Orders</h1>
-          <p className="text-zinc-500 mt-1">{orders.length} total orders</p>
+        <div className="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="font-display text-4xl font-bold">Orders</h1>
+            <p className="text-zinc-500 mt-1">{orders.length} total orders</p>
+          </div>
+          <button 
+            onClick={exportToCSV}
+            className="btn-outline flex items-center gap-2"
+          >
+            <Download size={16} /> Export to CSV
+          </button>
         </div>
 
         {loading ? (

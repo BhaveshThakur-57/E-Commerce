@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Ticket } from "lucide-react";
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -7,6 +7,7 @@ const AdminSidebar = () => {
     { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
     { name: "Products", path: "/admin/products", icon: Package },
     { name: "Orders", path: "/admin/orders", icon: ShoppingCart },
+    { name: "Coupons", path: "/admin/coupons", icon: Ticket },
   ];
 
   return (

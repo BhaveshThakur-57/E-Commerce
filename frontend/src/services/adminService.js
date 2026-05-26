@@ -41,3 +41,24 @@ export const uploadImageAPI = async (formData) => {
   });
   return data;
 };
+
+// Coupons
+export const getAllCouponsAPI = async () => {
+  const { data } = await api.get("/coupons");
+  return data;
+};
+
+export const createCouponAPI = async (couponData) => {
+  const { data } = await api.post("/coupons", couponData);
+  return data;
+};
+
+export const updateCouponAPI = async (id, couponData) => {
+  const { data } = await api.put(`/coupons/${id}`, couponData);
+  return data;
+};
+
+export const deleteCouponAPI = async (id) => {
+  const { data } = await api.delete(`/coupons/${id}`);
+  return data;
+};
