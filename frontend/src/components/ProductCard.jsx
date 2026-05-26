@@ -81,9 +81,9 @@ const ProductCard = ({ product, index = 0 }) => {
               Only {product.stock} left
             </span>
           )}
-          {hasVariants && (
+          {product.variants && product.variants.length > 1 && (
             <span className="bg-brand-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold">
-              Multiple Colors
+              {product.variants.length} Colors
             </span>
           )}
         </div>

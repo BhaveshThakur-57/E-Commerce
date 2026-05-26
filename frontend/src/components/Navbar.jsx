@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingBag, Menu, X, Search, Heart } from "lucide-react";
+import { ShoppingBag, Menu, X, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -113,10 +113,6 @@ const Navbar = () => {
         {/* Right Icons */}
         <div className="flex items-center gap-3">
           <ThemeToggle />
-
-          <button className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500">
-            <Search size={18} />
-          </button>
 
           {/* Wishlist */}
           <Link
