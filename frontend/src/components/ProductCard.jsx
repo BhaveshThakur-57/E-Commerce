@@ -61,9 +61,10 @@ const ProductCard = ({ product, index = 0 }) => {
           src={product.image}
           alt={product.name}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           onError={(e) => {
-            e.target.src = `https://picsum.photos/seed/${product._id}/400/500`;
+            e.target.onerror = null;
+            e.target.src = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" fill="%23f4f4f5"><rect width="400" height="500"/><text x="200" y="240" text-anchor="middle" font-family="system-ui" font-size="16" fill="%23a1a1aa">LUXORA</text><text x="200" y="270" text-anchor="middle" font-family="system-ui" font-size="12" fill="%23d4d4d8">Image unavailable</text></svg>`)}`;
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

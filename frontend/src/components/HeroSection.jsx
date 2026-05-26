@@ -53,8 +53,8 @@ const HeroSection = () => (
       {/* Right Image Grid */}
       <div className="relative hidden lg:grid grid-cols-2 gap-4 animate-fade-in" style={{ animationDelay: "0.5s" }}>
         {[
-          { url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80", cls: "h-72" },
-          { url: "https://images.unsplash.com/photo-1434389678369-182cb14f1754?w=400&q=80", cls: "h-52 mt-8" },
+          { url: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=900&q=80", cls: "h-72" },
+          { url: "/hero-2.svg", cls: "h-52 mt-8" },
           { url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80", cls: "h-52" },
           { url: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&q=80", cls: "h-72 -mt-8" },
         ].map(({ url, cls }, i) => (

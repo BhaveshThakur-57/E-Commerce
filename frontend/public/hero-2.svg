@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="#111827"/>
+  <rect x="0" y="0" width="100%" height="100%" fill="url(#g)" opacity="0.12"/>
+  <g fill="#ffffff" opacity="0.95">
+    <rect x="40" y="40" width="720" height="480" rx="20" fill="#ffffff" opacity="0.06"/>
+    <text x="60" y="140" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="700">LUXORA</text>
+    <text x="60" y="190" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Summer Drop — Streetwear</text>
+    <circle cx="620" cy="300" r="110" fill="#fff" opacity="0.06"/>
+  </g>
+</svg>

@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: "https://picsum.photos/seed/default/400/500",
+      default: "",
     },
     // Phase 10: Multiple images
     images: [

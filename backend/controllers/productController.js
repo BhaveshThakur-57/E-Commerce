@@ -56,7 +56,7 @@ const createProduct = async (req, res) => {
       name,
       description,
       price,
-      image: image || `https://picsum.photos/seed/${Date.now()}/400/500`,
+      image: image || "",
       images: images || [],
       category,
       collections: collections || [],
