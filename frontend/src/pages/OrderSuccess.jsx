@@ -11,6 +11,7 @@ import Loader from "../components/Loader";
 import { cancelOrderAPI } from "../services/orderService";
 import { useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useRef } from "react";
 
 const TRACKING_STEPS = [
   {
@@ -155,10 +156,13 @@ const OrderSuccess = () => {
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState("");
 
+  const verifiedRef = useRef(false);
+
   useEffect(() => {
     const processOrder = async () => {
       try {
-        if (location.state?.verifyData) {
+        if (location.state?.verifyData && !verifiedRef.current) {
+          verifiedRef.current = true; // Prevent multiple calls
           setVerifying(true);
           await verifyPaymentAPI(location.state.verifyData);
           // Clear the state so it doesn't re-verify on refresh
@@ -175,7 +179,8 @@ const OrderSuccess = () => {
       }
     };
     processOrder();
-  }, [id, location.state?.verifyData, fetchCart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, location.state?.verifyData]);
 
   if (verifying) return <div className="pt-28"><Loader text="Verifying your payment... Please do not close this window." /></div>;
   if (loading) return <div className="pt-28"><Loader /></div>;
