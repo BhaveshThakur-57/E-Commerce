@@ -119,7 +119,8 @@ const AdminProducts = () => {
     try {
       setUploading(true);
       const { url } = await uploadImageAPI(formData);
-      const fullUrl = `http://localhost:5000${url}`;
+      const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
+      const fullUrl = `${apiBase}${url}`;
       setForm((prev) => ({ 
         ...prev, 
         images: [...(prev.images || []), { url: fullUrl, alt: prev.name || "" }]
