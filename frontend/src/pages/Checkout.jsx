@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +17,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const paymentInProgress = useRef(false);
 
   // Preload Razorpay script on mount for faster payment
   useEffect(() => {
@@ -192,6 +193,7 @@ const Checkout = () => {
         setLoading(false);
       });
 
+      paymentInProgress.current = true;
       rzp.open();
       // Don't setLoading(false) here — Razorpay modal is now open
       // Loading will be reset in handler/ondismiss/payment.failed callbacks
@@ -201,7 +203,7 @@ const Checkout = () => {
     }
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 && !paymentInProgress.current) {
     navigate("/cart");
     return null;
   }
