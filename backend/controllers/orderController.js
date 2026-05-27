@@ -64,17 +64,8 @@ const createOrder = async (req, res) => {
       }],
     });
 
-    // Send payment pending email (confirmation only after payment)
-    try {
-      const user = await User.findById(req.user._id);
-      await sendEmail({
-        to: user.email,
-        subject: `Payment Pending — ${order.orderId} | LUXORA`,
-        html: paymentPendingEmail(order, user.name),
-      });
-    } catch (emailErr) {
-      console.error("Order email failed:", emailErr.message);
-    }
+    // Removed Payment Pending email to make the "Pay Now" button instantly open Razorpay.
+    // The user will receive the Order Confirmed email once the payment is successful.
 
     res.status(201).json(order);
   } catch (error) {
@@ -165,7 +156,7 @@ const cancelOrder = async (req, res) => {
 
     await order.save();
 
-    // Cancel email send karo
+    // Cancel email send karo (Must be awaited before res.json so Vercel doesn't kill it)
     try {
       const user = await User.findById(req.user._id);
       await sendEmail({

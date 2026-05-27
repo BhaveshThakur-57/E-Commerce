@@ -93,26 +93,23 @@ const verifyPayment = async (req, res) => {
       Cart.findOneAndUpdate({ user: req.user._id }, { items: [] }),
     ]);
 
-    // Send response IMMEDIATELY — don't block on email
+    // Send Order Confirmed email BEFORE response so Vercel doesn't kill the background task
+    try {
+      const user = await User.findById(req.user._id);
+      await sendEmail({
+        to: user.email,
+        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
+        html: orderConfirmationEmail(order, user.name),
+      });
+    } catch (emailErr) {
+      console.error("Confirmation email failed:", emailErr.message);
+    }
+
+    // Send response
     res.json({
       success: true,
       message: "Payment verified successfully",
       order,
-    });
-
-    // Send Order Confirmed email in background (after response sent)
-    const userId = req.user._id;
-    setImmediate(async () => {
-      try {
-        const user = await User.findById(userId);
-        await sendEmail({
-          to: user.email,
-          subject: `Order Confirmed — ${order.orderId} | LUXORA`,
-          html: orderConfirmationEmail(order, user.name),
-        });
-      } catch (emailErr) {
-        console.error("Confirmation email failed:", emailErr.message);
-      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -129,7 +126,7 @@ const paymentFailed = async (req, res) => {
       order.paymentStatus = "failed";
       await order.save();
 
-      // Send payment failed email
+      // Send payment failed email BEFORE response
       try {
         const user = await User.findById(order.user);
         if (user) {
