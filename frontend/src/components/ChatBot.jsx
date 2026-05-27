@@ -20,8 +20,10 @@ const ChatBot = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Must be after all hooks
-  if (location.pathname.startsWith("/admin")) return null;
+  // Hide chatbot on non-browsing pages (admin, checkout, payment, orders, cart, profile, login)
+  const hiddenPaths = ["/admin", "/checkout", "/order-success", "/orders", "/cart", "/profile", "/login"];
+  const shouldHide = hiddenPaths.some((path) => location.pathname.startsWith(path));
+  if (shouldHide) return null;
 
   const sendMessage = async (msg) => {
     if (!msg.trim() || loading) return;
