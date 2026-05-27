@@ -5,9 +5,12 @@ import {
   Clock, Truck, Star, ShoppingBag,
 } from "lucide-react";
 import { getOrderByIdAPI } from "../services/orderService";
+import { verifyPaymentAPI } from "../services/paymentService";
 import { downloadInvoiceAPI } from "../services/invoiceService";
 import Loader from "../components/Loader";
 import { cancelOrderAPI } from "../services/orderService";
+import { useLocation } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const TRACKING_STEPS = [
   {
@@ -142,26 +145,39 @@ const OrderTimeline = ({ order }) => {
 
 const OrderSuccess = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const { fetchCart } = useCart();
+  
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [verifying, setVerifying] = useState(!!location.state?.verifyData);
   const [downloading, setDownloading] = useState(false);
-  const [cancelling, setCancelling] = useState(false);   // ✅ moved inside component
-  const [cancelError, setCancelError] = useState("");     // ✅ moved inside component
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState("");
 
   useEffect(() => {
-    const fetchOrder = async () => {
+    const processOrder = async () => {
       try {
+        if (location.state?.verifyData) {
+          setVerifying(true);
+          await verifyPaymentAPI(location.state.verifyData);
+          // Clear the state so it doesn't re-verify on refresh
+          window.history.replaceState({}, document.title);
+          fetchCart().catch(() => {});
+        }
         const data = await getOrderByIdAPI(id);
         setOrder(data);
       } catch (err) {
-        console.error("Failed to fetch order");
+        console.error("Failed to fetch/verify order");
       } finally {
+        setVerifying(false);
         setLoading(false);
       }
     };
-    fetchOrder();
-  }, [id]);
+    processOrder();
+  }, [id, location.state?.verifyData, fetchCart]);
 
+  if (verifying) return <div className="pt-28"><Loader text="Verifying your payment... Please do not close this window." /></div>;
   if (loading) return <div className="pt-28"><Loader /></div>;
 
   return (

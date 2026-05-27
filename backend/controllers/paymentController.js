@@ -81,6 +81,14 @@ const verifyPayment = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    if (order.paymentStatus === "paid") {
+      return res.json({
+        success: true,
+        message: "Payment already verified",
+        order,
+      });
+    }
+
     order.paymentStatus = "paid";
     order.razorpayPaymentId = razorpayPaymentId;
     await order.save();

@@ -155,18 +155,21 @@ const Checkout = () => {
           contact: form.phone,
         },
         theme: { color: "#ff0076" },
-        handler: async function (response) {
+        handler: function (response) {
           try {
-            await verifyPaymentAPI({
+            // Pass the verification data to the OrderSuccess page
+            // so it can handle the verification and loading state there.
+            const verifyData = {
               orderId: order._id,
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
+            };
+            
+            navigate(`/order-success/${order._id}`, { 
+              replace: true,
+              state: { verifyData }
             });
-            // Refresh cart in background, don't block navigation
-            fetchCart().catch(() => {});
-            setLoading(false);
-            navigate(`/order-success/${order._id}`, { replace: true });
           } catch (err) {
             console.error("Payment verification error:", err);
             setError("Payment verification failed. Contact support.");
