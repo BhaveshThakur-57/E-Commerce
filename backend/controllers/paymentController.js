@@ -85,36 +85,35 @@ const verifyPayment = async (req, res) => {
     order.razorpayPaymentId = razorpayPaymentId;
     await order.save();
 
-    // Reduce stock
-    for (const item of order.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.qty },
-      });
-    }
+    // Reduce stock & clear cart in parallel for speed
+    await Promise.all([
+      ...order.items.map((item) =>
+        Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.qty } })
+      ),
+      Cart.findOneAndUpdate({ user: req.user._id }, { items: [] }),
+    ]);
 
-    // Clear cart
-    await Cart.findOneAndUpdate(
-      { user: req.user._id },
-      { items: [] }
-    );
-
+    // Send response IMMEDIATELY — don't block on email
     res.json({
       success: true,
       message: "Payment verified successfully",
       order,
     });
 
-    // Send Order Confirmed email after successful payment
-    try {
-      const user = await User.findById(req.user._id);
-      await sendEmail({
-        to: user.email,
-        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
-        html: orderConfirmationEmail(order, user.name),
-      });
-    } catch (emailErr) {
-      console.error("Confirmation email failed:", emailErr.message);
-    }
+    // Send Order Confirmed email in background (after response sent)
+    const userId = req.user._id;
+    setImmediate(async () => {
+      try {
+        const user = await User.findById(userId);
+        await sendEmail({
+          to: user.email,
+          subject: `Order Confirmed — ${order.orderId} | LUXORA`,
+          html: orderConfirmationEmail(order, user.name),
+        });
+      } catch (emailErr) {
+        console.error("Confirmation email failed:", emailErr.message);
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

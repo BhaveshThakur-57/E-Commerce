@@ -46,6 +46,7 @@ const ProductDetail = () => {
   const [reviewError, setReviewError] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [recommendations, setRecommendations] = useState([]);
+  const [recsLoading, setRecsLoading] = useState(true);
 
   const fetchReviews = async (productId) => {
     try {
@@ -56,6 +57,16 @@ const ProductDetail = () => {
     finally { setReviewsLoading(false); }
   };
 
+  // Start fetching recommendations immediately using URL param id
+  useEffect(() => {
+    setRecsLoading(true);
+    setRecommendations([]);
+    getRecommendationsAPI(id)
+      .then((recs) => setRecommendations(recs))
+      .catch(() => console.error("Recommendations failed"))
+      .finally(() => setRecsLoading(false));
+  }, [id]);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -64,11 +75,7 @@ const ProductDetail = () => {
         setProduct(data);
         setActiveImg(0);
         if (data.variants && data.variants.length > 0) setSelectedColor(data.variants[0]);
-        // Fetch reviews and recommendations in parallel
         fetchReviews(data._id);
-        getRecommendationsAPI(data._id)
-          .then((recs) => setRecommendations(recs))
-          .catch(() => console.error("Recommendations failed"));
       } catch { setError("Product not found"); }
       finally { setLoading(false); }
     };
@@ -391,15 +398,28 @@ const ProductDetail = () => {
         </div>
 
         {/* AI Recommendations */}
-        {recommendations.length > 0 && (
+        {(recsLoading || recommendations.length > 0) && (
           <div className="mt-16">
             <div className="flex items-center gap-2 mb-6">
               <h2 className="font-display text-2xl font-bold">You Might Also Like</h2>
               <span className="text-xs bg-gradient-to-r from-brand-500 to-accent-400 text-white px-2.5 py-1 rounded-full font-medium">✨ AI Picks</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {recommendations.map((p, i) => <ProductCard key={p._id} product={p} index={i} />)}
-            </div>
+            {recsLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-zinc-200 dark:bg-zinc-800 rounded-2xl aspect-[3/4] mb-3" />
+                    <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-16 mb-2" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4 mb-2" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {recommendations.map((p, i) => <ProductCard key={p._id} product={p} index={i} />)}
+              </div>
+            )}
           </div>
         )}
 

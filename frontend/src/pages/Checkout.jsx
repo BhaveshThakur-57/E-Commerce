@@ -80,6 +80,20 @@ const Checkout = () => {
 
   const loadRazorpay = () => {
     return new Promise((resolve) => {
+      // If script is already loaded (preloaded on mount), resolve immediately
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existing) {
+        // Script tag exists but may still be loading
+        existing.addEventListener('load', () => resolve(true));
+        existing.addEventListener('error', () => resolve(false));
+        // If already loaded
+        if (window.Razorpay) resolve(true);
+        return;
+      }
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
@@ -149,17 +163,19 @@ const Checkout = () => {
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
             });
-            await fetchCart();
+            // Refresh cart in background, don't block navigation
+            fetchCart().catch(() => {});
             setLoading(false);
-            navigate(`/order-success/${order._id}`);
+            navigate(`/order-success/${order._id}`, { replace: true });
           } catch (err) {
+            console.error("Payment verification error:", err);
             setError("Payment verification failed. Contact support.");
             setLoading(false);
           }
         },
         modal: {
-          ondismiss: async function () {
-            await paymentFailedAPI(order._id);
+          ondismiss: function () {
+            paymentFailedAPI(order._id).catch(() => {});
             setError("Payment cancelled. Try again.");
             setLoading(false);
           },
@@ -167,14 +183,15 @@ const Checkout = () => {
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", async function (response) {
-        await paymentFailedAPI(order._id);
+      rzp.on("payment.failed", function (response) {
+        paymentFailedAPI(order._id).catch(() => {});
         setError(`Payment failed: ${response.error.description}`);
         setLoading(false);
       });
 
       rzp.open();
-      setLoading(false);
+      // Don't setLoading(false) here — Razorpay modal is now open
+      // Loading will be reset in handler/ondismiss/payment.failed callbacks
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
       setLoading(false);
