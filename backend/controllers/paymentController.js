@@ -101,19 +101,7 @@ const verifyPayment = async (req, res) => {
       Cart.findOneAndUpdate({ user: req.user._id }, { items: [] }),
     ]);
 
-    // Send Order Confirmed email asynchronously after 5 seconds
-    setTimeout(async () => {
-      try {
-        const user = await User.findById(req.user._id);
-        await sendEmail({
-          to: user.email,
-          subject: `Order Confirmed — ${order.orderId} | LUXORA`,
-          html: orderConfirmationEmail(order, user.name),
-        });
-      } catch (emailErr) {
-        console.error("Confirmation email failed:", emailErr.message);
-      }
-    }, 5000);
+    // Email will be triggered by frontend after 5 seconds via sendSuccessEmail endpoint
 
     // Send response
     res.json({
@@ -136,23 +124,44 @@ const paymentFailed = async (req, res) => {
       order.paymentStatus = "failed";
       await order.save();
 
-      // Send payment failed email asynchronously after 5 seconds
-      setTimeout(async () => {
-        try {
-          const user = await User.findById(order.user);
-          if (user) {
-            await sendEmail({
-              to: user.email,
-              subject: `Payment Failed — ${order.orderId} | LUXORA`,
-              html: paymentFailedEmail(order, user.name),
-            });
-          }
-        } catch (emailErr) {
-          console.error("Payment failed email error:", emailErr.message);
+      // Send payment failed email
+      try {
+        const user = await User.findById(order.user);
+        if (user) {
+          await sendEmail({
+            to: user.email,
+            subject: `Payment Failed — ${order.orderId} | LUXORA`,
+            html: paymentFailedEmail(order, user.name),
+          });
         }
-      }, 5000);
+      } catch (emailErr) {
+        console.error("Payment failed email error:", emailErr.message);
+      }
     }
     res.json({ message: "Payment marked as failed" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Send success email
+// @route   POST /api/payment/send-success-email
+const sendSuccessEmail = async (req, res) => {
+  const { orderId } = req.body;
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (order.paymentStatus === "paid") {
+      const user = await User.findById(order.user);
+      await sendEmail({
+        to: user.email,
+        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
+        html: orderConfirmationEmail(order, user.name),
+      });
+      return res.json({ success: true, message: "Email sent" });
+    }
+    res.status(400).json({ message: "Order not paid" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -162,4 +171,5 @@ module.exports = {
   createRazorpayOrder,
   verifyPayment,
   paymentFailed,
+  sendSuccessEmail,
 };

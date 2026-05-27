@@ -5,7 +5,7 @@ import {
   Clock, Truck, Star, ShoppingBag,
 } from "lucide-react";
 import { getOrderByIdAPI } from "../services/orderService";
-import { verifyPaymentAPI } from "../services/paymentService";
+import { verifyPaymentAPI, sendSuccessEmailAPI } from "../services/paymentService";
 import { downloadInvoiceAPI } from "../services/invoiceService";
 import Loader from "../components/Loader";
 import { cancelOrderAPI } from "../services/orderService";
@@ -168,6 +168,11 @@ const OrderSuccess = () => {
           // Clear the state so it doesn't re-verify on refresh
           window.history.replaceState({}, document.title);
           fetchCart().catch(() => {});
+          
+          // Send email asynchronously after 5 seconds without blocking the UI
+          setTimeout(() => {
+            sendSuccessEmailAPI(id).catch((err) => console.error("Failed to trigger success email:", err));
+          }, 5000);
         }
         const data = await getOrderByIdAPI(id);
         setOrder(data);

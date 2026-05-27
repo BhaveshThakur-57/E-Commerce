@@ -14,3 +14,8 @@ export const paymentFailedAPI = async (orderId) => {
   const { data } = await api.post("/payment/failed", { orderId });
   return data;
 };
+
+export const sendSuccessEmailAPI = async (orderId) => {
+  const { data } = await api.post("/payment/send-success-email", { orderId });
+  return data;
+};
