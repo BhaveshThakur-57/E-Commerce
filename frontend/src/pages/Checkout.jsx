@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +17,16 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Preload Razorpay script on mount for faster payment
+  useEffect(() => {
+    if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -141,7 +151,7 @@ const Checkout = () => {
             });
             await fetchCart();
             setLoading(false);
-            window.location.href = `/order-success/${order._id}`;
+            navigate(`/order-success/${order._id}`);
           } catch (err) {
             setError("Payment verification failed. Contact support.");
             setLoading(false);

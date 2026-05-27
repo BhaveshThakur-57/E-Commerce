@@ -4,7 +4,7 @@ const Product = require("../models/Product");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Model fallback chain — tries each in order
-const MODEL_CHAIN = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-3-flash-preview"];
+const MODEL_CHAIN = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.5-pro"];
 
 // Retry helper with model fallback
 const generateWithRetry = async (prompt, maxRetries = 2) => {

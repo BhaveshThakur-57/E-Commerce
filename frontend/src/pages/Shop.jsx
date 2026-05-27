@@ -135,7 +135,7 @@ const Shop = () => {
           )}
           <input
             type="text"
-            placeholder="Search — try 'black hoodie under 2000' and press Enter..."
+            placeholder="Search products..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
