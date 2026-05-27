@@ -101,17 +101,19 @@ const verifyPayment = async (req, res) => {
       Cart.findOneAndUpdate({ user: req.user._id }, { items: [] }),
     ]);
 
-    // Send Order Confirmed email BEFORE response so Vercel doesn't kill the background task
-    try {
-      const user = await User.findById(req.user._id);
-      await sendEmail({
-        to: user.email,
-        subject: `Order Confirmed — ${order.orderId} | LUXORA`,
-        html: orderConfirmationEmail(order, user.name),
-      });
-    } catch (emailErr) {
-      console.error("Confirmation email failed:", emailErr.message);
-    }
+    // Send Order Confirmed email asynchronously after 5 seconds
+    setTimeout(async () => {
+      try {
+        const user = await User.findById(req.user._id);
+        await sendEmail({
+          to: user.email,
+          subject: `Order Confirmed — ${order.orderId} | LUXORA`,
+          html: orderConfirmationEmail(order, user.name),
+        });
+      } catch (emailErr) {
+        console.error("Confirmation email failed:", emailErr.message);
+      }
+    }, 5000);
 
     // Send response
     res.json({
@@ -134,19 +136,21 @@ const paymentFailed = async (req, res) => {
       order.paymentStatus = "failed";
       await order.save();
 
-      // Send payment failed email BEFORE response
-      try {
-        const user = await User.findById(order.user);
-        if (user) {
-          await sendEmail({
-            to: user.email,
-            subject: `Payment Failed — ${order.orderId} | LUXORA`,
-            html: paymentFailedEmail(order, user.name),
-          });
+      // Send payment failed email asynchronously after 5 seconds
+      setTimeout(async () => {
+        try {
+          const user = await User.findById(order.user);
+          if (user) {
+            await sendEmail({
+              to: user.email,
+              subject: `Payment Failed — ${order.orderId} | LUXORA`,
+              html: paymentFailedEmail(order, user.name),
+            });
+          }
+        } catch (emailErr) {
+          console.error("Payment failed email error:", emailErr.message);
         }
-      } catch (emailErr) {
-        console.error("Payment failed email error:", emailErr.message);
-      }
+      }, 5000);
     }
     res.json({ message: "Payment marked as failed" });
   } catch (error) {
