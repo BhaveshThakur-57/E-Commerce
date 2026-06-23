@@ -35,16 +35,16 @@ const Navbar = () => {
     return (
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          scrolled ? "glass shadow-lg shadow-black/5 py-3" : "bg-white/80 dark:bg-zinc-950/80 border-b border-zinc-100 dark:border-zinc-800 py-3"
+          scrolled ? "glass shadow-lg shadow-black/5 py-4" : "bg-white/80 dark:bg-zinc-950/80 border-b border-zinc-100 dark:border-zinc-800 py-4"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40">
-              <span className="text-white font-bold text-sm">L</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40">
+              <span className="text-white font-bold text-base">L</span>
             </div>
             <div>
-              <span className="font-display text-xl font-bold gradient-text block leading-none">LUXORA</span>
+              <span className="font-display text-2xl font-bold gradient-text block leading-none">LUXORA</span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500 leading-none">Admin Panel</span>
             </div>
           </Link>
@@ -66,21 +66,21 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled ? "bg-white/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-zinc-200/50 dark:border-zinc-800/50 py-3" : "bg-transparent py-5"
+        scrolled ? "bg-white/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-zinc-200/50 dark:border-zinc-800/50 py-4" : "bg-transparent py-6"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40 group-hover:scale-110 transition-transform duration-300">
-            <span className="text-white font-bold text-sm">L</span>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-400 flex items-center justify-center shadow-lg shadow-brand-500/40 group-hover:scale-110 transition-transform duration-300">
+            <span className="text-white font-bold text-base">L</span>
           </div>
           <div>
-            <span className="font-display text-xl font-bold gradient-text block leading-none">
+            <span className="font-display text-2xl font-bold gradient-text block leading-none">
               LUXORA
             </span>
-            <span className="text-xs text-zinc-400 dark:text-zinc-500 leading-none">
+            <span className="text-[11px] text-zinc-400 dark:text-zinc-500 leading-none">
               Wear the Extraordinary
             </span>
           </div>
@@ -94,7 +94,7 @@ const Navbar = () => {
               <li key={link.label}>
                 <Link
                   to={link.to}
-                  className={`text-sm font-medium relative group transition-colors duration-200 ${
+                  className={`text-[15px] font-medium relative group transition-colors duration-200 ${
                     isActive
                       ? "text-brand-500"
                       : "text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-400"
@@ -119,7 +119,7 @@ const Navbar = () => {
             to="/wishlist"
             className="hidden md:flex p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500 relative"
           >
-            <Heart size={18} />
+            <Heart size={20} />
             {wishlist.length > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
                 {wishlist.length}
@@ -132,7 +132,7 @@ const Navbar = () => {
             onClick={toggleCart}
             className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 hover:text-brand-500"
           >
-            <ShoppingBag size={20} />
+            <ShoppingBag size={22} />
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-brand-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-scale-in">
                 {totalItems}

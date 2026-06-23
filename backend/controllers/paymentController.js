@@ -93,13 +93,36 @@ const verifyPayment = async (req, res) => {
     order.razorpayPaymentId = razorpayPaymentId;
     await order.save();
 
-    // Reduce stock & clear cart in parallel for speed
-    await Promise.all([
-      ...order.items.map((item) =>
-        Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.qty } })
-      ),
-      Cart.findOneAndUpdate({ user: req.user._id }, { items: [] }),
-    ]);
+    // Reduce stock & trigger Low Stock Alerts
+    for (const item of order.items) {
+      const updatedProduct = await Product.findByIdAndUpdate(
+        item.product, 
+        { $inc: { stock: -item.qty } },
+        { new: true } 
+      );
+      
+      if (updatedProduct && updatedProduct.stock <= 5) {
+        try {
+          await sendEmail({
+            to: "admin@luxora.com",
+            subject: `⚠️ Low Stock Alert: ${updatedProduct.name}`,
+            html: `
+              <h2>Low Stock Alert</h2>
+              <p>Product: <strong>${updatedProduct.name}</strong></p>
+              <p>Current Stock: <strong style="color:red;">${updatedProduct.stock}</strong></p>
+              <p>Please restock soon to avoid missing out on sales.</p>
+              <br/>
+              <p><em>LUXORA Automated Inventory System</em></p>
+            `
+          });
+        } catch (emailErr) {
+          console.error("Low stock email failed:", emailErr.message);
+        }
+      }
+    }
+
+    // clear cart
+    await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
 
     // Email will be triggered by frontend after 5 seconds via sendSuccessEmail endpoint
 

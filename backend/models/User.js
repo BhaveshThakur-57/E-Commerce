@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+    pushSubscription: {
+      type: Object, // Will store the PushSubscription JSON
+      default: null,
+    },
   },
   { timestamps: true }
 );

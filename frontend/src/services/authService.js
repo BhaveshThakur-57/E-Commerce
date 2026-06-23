@@ -19,3 +19,8 @@ export const updateProfileAPI = async (profileData) => {
   const { data } = await api.put("/auth/profile", profileData);
   return data;
 };
+
+export const googleLoginAPI = async (credential) => {
+  const { data } = await api.post("/auth/google", { credential });
+  return data;
+};

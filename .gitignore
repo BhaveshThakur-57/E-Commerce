@@ -25,6 +25,13 @@ backend/.env
 frontend/.env
 
 # ======================
+# Uploads / Media
+# ======================
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+
+# ======================
 # Build / Dist
 # ======================
 dist

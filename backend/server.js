@@ -37,6 +37,9 @@ app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/coupons", require("./routes/couponRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
 app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/api/settings", require("./routes/settingsRoutes"));
+app.use("/api/inquiries", require("./routes/inquiryRoutes"));
+app.use("/api/notifications", require("./routes/notificationRoutes"));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

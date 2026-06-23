@@ -69,9 +69,9 @@ const HeroSection = () => (
         ))}
 
         {/* Floating badge */}
-        <div className="absolute bottom-8 -left-6 glass rounded-2xl p-4 shadow-xl animate-float">
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Happy Customers</p>
-          <p className="font-display font-bold text-xl gradient-text">50K+</p>
+        <div className="absolute bottom-8 -left-6 bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-700 animate-float">
+          <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold">Happy Customers</p>
+          <p className="font-display font-bold text-2xl gradient-text">50K+</p>
         </div>
       </div>
     </div>

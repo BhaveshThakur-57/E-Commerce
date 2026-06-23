@@ -99,7 +99,7 @@ const Careers = () => {
                   <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-3">{job.desc}</p>
                 </div>
                 <Link
-                  to="/contact"
+                  to={`/contact?subject=Application for ${encodeURIComponent(job.title)}`}
                   className="flex-shrink-0 text-sm font-semibold text-brand-500 flex items-center gap-1 hover:gap-2 transition-all"
                 >
                   Apply <ArrowRight size={14} />

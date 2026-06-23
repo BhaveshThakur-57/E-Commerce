@@ -58,7 +58,7 @@ const Home = () => {
             View All <ArrowRight size={15} />
           </Link>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 overflow-x-auto pb-4 pt-2 px-2">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.name}

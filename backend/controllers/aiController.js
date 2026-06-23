@@ -133,4 +133,28 @@ Example output: ["id1","id2","id3","id4"]`;
   }
 };
 
-module.exports = { generateDescription, smartSearch, getRecommendations };
+const predictSize = async (req, res) => {
+  const { height, weight, fitPreference, productCategory } = req.body;
+  if (!height || !weight || !fitPreference || !productCategory) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const prompt = `Act as a fashion sizing expert for an Indian streetwear brand LUXORA.
+A user is ${height} cm tall and weighs ${weight} kg.
+They want an ${fitPreference} fit for a ${productCategory}.
+Based on typical Indian sizing, recommend the exact size (S, M, L, XL, XXL) and explain why in 1-2 short sentences.
+Format the output as a JSON object: {"size": "M", "explanation": "..."}
+No markdown, just raw JSON.`;
+
+    const text = await generateWithRetry(prompt);
+    let cleaned = text.trim().replace(/```json|```/g, "").trim();
+    const result = JSON.parse(cleaned);
+    res.json(result);
+  } catch (error) {
+    console.error("Size prediction error:", error.message);
+    res.status(500).json({ message: "AI size prediction unavailable at the moment." });
+  }
+};
+
+module.exports = { generateDescription, smartSearch, getRecommendations, predictSize };

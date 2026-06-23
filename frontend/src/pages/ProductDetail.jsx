@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingBag, Heart, Star, ArrowLeft, Truck, Shield, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import { ShoppingBag, Heart, Star, ArrowLeft, Truck, Shield, ChevronLeft, ChevronRight, Trash2, X, Ruler } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -9,7 +9,7 @@ import Loader from "../components/Loader";
 import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
 import { getProductReviewsAPI, addReviewAPI, deleteReviewAPI } from "../services/reviewService";
-import { getRecommendationsAPI } from "../services/aiService";
+import { getRecommendationsAPI, predictSizeAPI } from "../services/aiService";
 
 const getAllImages = (product) => {
   const imgs = [];
@@ -47,6 +47,13 @@ const ProductDetail = () => {
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [recommendations, setRecommendations] = useState([]);
   const [recsLoading, setRecsLoading] = useState(true);
+
+  // Size Predictor State
+  const [showSizeModal, setShowSizeModal] = useState(false);
+  const [sizeForm, setSizeForm] = useState({ height: "", weight: "", fitPreference: "Regular" });
+  const [sizeResult, setSizeResult] = useState(null);
+  const [sizePredicting, setSizePredicting] = useState(false);
+  const [sizeError, setSizeError] = useState("");
 
   const fetchReviews = async (productId) => {
     try {
@@ -146,6 +153,36 @@ const ProductDetail = () => {
     catch { alert("Failed to delete review"); }
   };
 
+  const handleSizePredict = async (e) => {
+    e.preventDefault();
+    setSizeError("");
+    setSizeResult(null);
+
+    if (!sizeForm.height || !sizeForm.weight) {
+      setSizeError("Please enter your height and weight.");
+      return;
+    }
+
+    try {
+      setSizePredicting(true);
+      const res = await predictSizeAPI({
+        height: sizeForm.height,
+        weight: sizeForm.weight,
+        fitPreference: sizeForm.fitPreference,
+        productCategory: product.category,
+      });
+      setSizeResult(res);
+      // Auto-select the size if it exists
+      if (res.size) {
+        setSelectedSize(res.size);
+      }
+    } catch (err) {
+      setSizeError(err.response?.data?.message || "Failed to predict size.");
+    } finally {
+      setSizePredicting(false);
+    }
+  };
+
   if (loading) return <div className="pt-28"><Loader text="Loading product..." /></div>;
   if (error) return (
     <div className="pt-28 text-center py-20">
@@ -166,7 +203,7 @@ const ProductDetail = () => {
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 lg:max-w-md w-full mx-auto">
             {allImages.length > 1 && (
               <div className="flex flex-col gap-3 w-20 flex-shrink-0">
                 {allImages.map((img, i) => (
@@ -255,7 +292,15 @@ const ProductDetail = () => {
 
             {hasVariants && selectedColor && (
               <div>
-                <p className="font-semibold text-sm mb-3">Size: <span className="text-brand-500 font-bold">{selectedSize || "Select"}</span></p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="font-semibold text-sm">Size: <span className="text-brand-500 font-bold">{selectedSize || "Select"}</span></p>
+                  <button 
+                    onClick={() => { setShowSizeModal(true); setSizeResult(null); }}
+                    className="text-xs bg-gradient-to-r from-brand-500 to-accent-400 text-white px-3 py-1.5 rounded-full font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-1.5"
+                  >
+                    ✨ Find My Size
+                  </button>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {allSizes.map((size) => {
                     const stock = getStockForSize(size);
@@ -420,6 +465,103 @@ const ProductDetail = () => {
                 {recommendations.map((p, i) => <ProductCard key={p._id} product={p} index={i} />)}
               </div>
             )}
+          </div>
+        )}
+
+        {/* AI Size Predictor Modal */}
+        {showSizeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 max-w-sm w-full animate-scale-in shadow-2xl border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
+              {/* Decorative background glow */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-brand-500/20 blur-3xl rounded-full" />
+              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-accent-500/20 blur-3xl rounded-full" />
+              
+              <button 
+                onClick={() => setShowSizeModal(false)}
+                className="absolute top-4 right-4 p-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 transition-colors z-50 cursor-pointer shadow-sm"
+              >
+                <X size={20} strokeWidth={2.5} />
+              </button>
+
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-500 to-accent-400 rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg shadow-brand-500/30">
+                  <Ruler size={24} />
+                </div>
+                <h3 className="text-xl font-display font-bold mb-1">AI Size Predictor</h3>
+                <p className="text-sm text-zinc-500 mb-6">Let Gemini recommend your perfect fit.</p>
+
+                {sizeError && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-500 text-sm rounded-xl">{sizeError}</div>}
+
+                {sizeResult ? (
+                  <div className="text-center py-4">
+                    <div className="inline-block p-1 bg-gradient-to-r from-brand-500 to-accent-400 rounded-2xl mb-4">
+                      <div className="bg-white dark:bg-zinc-900 px-6 py-4 rounded-xl flex flex-col items-center">
+                        <span className="text-xs text-zinc-500 uppercase font-bold tracking-widest mb-1">Recommended Size</span>
+                        <span className="text-4xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-accent-400">
+                          {sizeResult.size}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed bg-zinc-50 dark:bg-zinc-800 p-4 rounded-xl text-left border border-zinc-100 dark:border-zinc-700">
+                      " {sizeResult.explanation} "
+                    </p>
+                    <button 
+                      onClick={() => setShowSizeModal(false)}
+                      className="mt-6 w-full btn-primary"
+                    >
+                      Apply & Continue
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSizePredict} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-semibold text-zinc-500 mb-1 block">Height (cm)</label>
+                        <input 
+                          type="number" 
+                          placeholder="e.g. 175"
+                          value={sizeForm.height}
+                          onChange={(e) => setSizeForm({ ...sizeForm, height: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-zinc-500 mb-1 block">Weight (kg)</label>
+                        <input 
+                          type="number" 
+                          placeholder="e.g. 70"
+                          value={sizeForm.weight}
+                          onChange={(e) => setSizeForm({ ...sizeForm, weight: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-500"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-zinc-500 mb-1 block">Fit Preference</label>
+                      <select 
+                        value={sizeForm.fitPreference}
+                        onChange={(e) => setSizeForm({ ...sizeForm, fitPreference: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:border-brand-500"
+                      >
+                        <option value="Regular">Regular Fit</option>
+                        <option value="Slim">Slim Fit</option>
+                        <option value="Oversized">Oversized / Baggy</option>
+                      </select>
+                    </div>
+                    
+                    <button 
+                      type="submit" 
+                      disabled={sizePredicting}
+                      className="w-full mt-2 bg-gradient-to-r from-brand-500 to-accent-400 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-70"
+                    >
+                      {sizePredicting ? (
+                        <><svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg> Analyzing...</>
+                      ) : "Predict Size"}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
           </div>
         )}
 

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import CartSidebar from "./components/CartSidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import Login from "./pages/Login";
@@ -21,6 +22,8 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminCoupons from "./pages/Admin/AdminCoupons";
+import AdminInquiries from "./pages/Admin/AdminInquiries";
+import AdminBulkOperations from "./pages/Admin/AdminBulkOperations";
 import ChatBot from "./components/ChatBot";
 import Profile from "./pages/Profile";
 import FAQ from "./pages/FAQ";
@@ -44,6 +47,7 @@ function App() {
         <CartProvider>
           <WishlistProvider>
             <Router>
+
               <ScrollToTop />
               <Navbar />
               <CartSidebar />
@@ -63,6 +67,8 @@ function App() {
                 <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
                 <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
                 <Route path="/admin/coupons" element={<AdminRoute><AdminCoupons /></AdminRoute>} />
+                <Route path="/admin/bulk" element={<AdminRoute><AdminBulkOperations /></AdminRoute>} />
+                <Route path="/admin/inquiries" element={<AdminRoute><AdminInquiries /></AdminRoute>} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/shipping" element={<Shipping />} />
                 <Route path="/returns" element={<Returns />} />
@@ -74,6 +80,7 @@ function App() {
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/store-locator" element={<StoreLocator />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
               <Footer />
               <ChatBot />

@@ -116,10 +116,53 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+// @desc    Bulk update stock and price
+// @route   PUT /api/products/bulk-stock
+const bulkUpdateStock = async (req, res) => {
+  try {
+    const { updates } = req.body;
+    if (!Array.isArray(updates)) {
+      return res.status(400).json({ message: "Invalid payload format" });
+    }
+
+    const bulkOps = updates.map((update) => ({
+      updateOne: {
+        filter: { _id: update._id },
+        update: { $set: { stock: update.stock, price: update.price } }
+      }
+    }));
+
+    if (bulkOps.length > 0) {
+      await Product.bulkWrite(bulkOps);
+    }
+    res.json({ message: "Products updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Bulk create products from CSV
+// @route   POST /api/products/bulk
+const bulkCreateProducts = async (req, res) => {
+  try {
+    const { products } = req.body;
+    if (!Array.isArray(products)) {
+      return res.status(400).json({ message: "Invalid payload format" });
+    }
+
+    const inserted = await Product.insertMany(products);
+    res.status(201).json({ message: `${inserted.length} products added successfully`, inserted });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  bulkUpdateStock,
+  bulkCreateProducts,
 };

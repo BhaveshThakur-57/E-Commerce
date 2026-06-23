@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, Mail, Phone, MapPin, Clock, MessageSquare, Send, HelpCircle, ArrowRight } from "lucide-react";
+import api from "../services/api";
 
 const supportCategories = [
   { icon: MessageSquare, title: "Order Support", desc: "Track, modify, or cancel your orders", response: "< 2 hours" },
@@ -13,14 +14,27 @@ const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState("");
+  const location = useLocation();
 
-  useEffect(() => { setVisible(true); }, []);
+  useEffect(() => {
+    setVisible(true);
+    const searchParams = new URLSearchParams(location.search);
+    const subjectParam = searchParams.get("subject");
+    if (subjectParam) {
+      setForm((prev) => ({ ...prev, subject: subjectParam }));
+    }
+  }, [location.search]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setForm({ name: "", email: "", subject: "", message: "" });
+    try {
+      await api.post("/inquiries", form);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 4000);
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      console.error("Submit failed:", err);
+    }
   };
 
   return (

@@ -61,4 +61,67 @@ export const updateCouponAPI = async (id, couponData) => {
 export const deleteCouponAPI = async (id) => {
   const { data } = await api.delete(`/coupons/${id}`);
   return data;
+};
+
+// ============ Settings (CMS) ============
+export const getSettingsAPI = async () => {
+  const { data } = await api.get("/admin/settings");
+  return data;
+};
+
+export const updateAnnouncementAPI = async (announcementData) => {
+  const { data } = await api.put("/admin/settings/announcement", announcementData);
+  return data;
+};
+
+export const updateBannersAPI = async (banners) => {
+  const { data } = await api.put("/admin/settings/banners", { banners });
+  return data;
+};
+
+export const updatePageContentAPI = async (page, content) => {
+  const { data } = await api.put(`/admin/settings/pages/${page}`, { content });
+  return data;
+};
+
+// ============ Inquiries ============
+export const getAllInquiriesAPI = async () => {
+  const { data } = await api.get("/admin/inquiries");
+  return data;
+};
+
+export const getInquiryByIdAPI = async (id) => {
+  const { data } = await api.get(`/admin/inquiries/${id}`);
+  return data;
+};
+
+export const replyToInquiryAPI = async (id, reply) => {
+  const { data } = await api.put(`/admin/inquiries/${id}/reply`, { reply });
+  return data;
+};
+
+export const updateInquiryStatusAPI = async (id, status) => {
+  const { data } = await api.put(`/admin/inquiries/${id}/status`, { status });
+  return data;
+};
+
+export const deleteInquiryAPI = async (id) => {
+  const { data } = await api.delete(`/admin/inquiries/${id}`);
+  return data;
+};
+
+// ============ Bulk Operations ============
+export const bulkUpdateStockAPI = async (updates) => {
+  const { data } = await api.put("/admin/products/bulk-stock", { updates });
+  return data;
+};
+
+export const bulkUploadProductsAPI = async (products) => {
+  const { data } = await api.post("/admin/products/bulk", { products });
+  return data;
+};
+
+export const exportOrdersAPI = async () => {
+  const { data } = await api.get("/admin/orders/export");
+  return data;
 };

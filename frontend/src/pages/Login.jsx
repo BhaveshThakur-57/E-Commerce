@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { loginAPI, registerAPI } from "../services/authService";
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [activeTab, setActiveTab] = useState("user"); // "user", "admin", "register"
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,19 +24,31 @@ const Login = () => {
 
     try {
       let data;
-      if (isLogin) {
-        data = await loginAPI(form.email, form.password);
-      } else {
+      if (activeTab === "register") {
         if (!form.name.trim()) {
           setError("Name is required");
           setLoading(false);
           return;
         }
         data = await registerAPI(form.name, form.email, form.password);
+      } else {
+        data = await loginAPI(form.email, form.password);
       }
-      login(data);
       
-      // Role-based redirect
+      // Role-based validation
+      if (activeTab === "admin" && data.role !== "admin") {
+        setError("Access Denied: You do not have admin privileges.");
+        setLoading(false);
+        return;
+      }
+      
+      if (activeTab === "user" && data.role === "admin") {
+        setError("Admins must login through the Admin Login tab.");
+        setLoading(false);
+        return;
+      }
+      
+      login(data);
       if (data.role === "admin") {
         navigate("/admin");
       } else {
@@ -48,6 +60,9 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+
+
 
   return (
     <main className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
@@ -83,31 +98,39 @@ const Login = () => {
               </span>
             </Link>
             <h1 className="font-display text-3xl font-bold mb-2 text-zinc-900 dark:text-white">
-              {isLogin ? "Welcome back" : "Create account"}
+              {activeTab === "register" ? "Create account" : activeTab === "admin" ? "Admin Portal" : "Welcome back"}
             </h1>
             <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-              {isLogin
-                ? "Sign in to your account to continue"
-                : "Join thousands of happy shoppers"}
+              {activeTab === "register"
+                ? "Join thousands of happy shoppers"
+                : activeTab === "admin"
+                ? "Secure access to the management dashboard"
+                : "Sign in to your account to continue"}
             </p>
           </div>
 
           {/* Tabs */}
-          <div className="flex rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 mb-8 bg-zinc-100 dark:bg-zinc-950 p-1">
-            {["Sign In", "Register"].map((label, i) => (
+          <div className="flex rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 mb-6 bg-zinc-100 dark:bg-zinc-950 p-1">
+            {[
+              { id: "user", label: "User Login" },
+              { id: "admin", label: "Admin Login" },
+              { id: "register", label: "Register" }
+            ].map((tab) => (
               <button
-                key={label}
-                onClick={() => { setIsLogin(i === 0); setError(""); }}
-                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ${
-                  (i === 0) === isLogin
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setError(""); }}
+                className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-300 ${
+                  activeTab === tab.id
                     ? "bg-white dark:bg-zinc-800 text-brand-600 dark:text-brand-400 shadow-sm"
                     : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                 }`}
               >
-                {label}
+                {tab.label}
               </button>
             ))}
           </div>
+
+
 
           {/* Error */}
           {error && (
@@ -118,7 +141,7 @@ const Login = () => {
 
           {/* Form */}
           <div className="space-y-4">
-            {!isLogin && (
+            {activeTab === "register" && (
               <div className="relative animate-fade-in">
                 <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
                 <input
@@ -179,13 +202,15 @@ const Login = () => {
                 </>
               ) : (
                 <>
-                  {isLogin ? "Sign In to Account" : "Create Account"} <ArrowRight size={18} />
+                  {activeTab === "register" ? "Create Account" : activeTab === "admin" ? "Secure Admin Login" : "Sign In"} <ArrowRight size={18} />
                 </>
               )}
             </button>
+            
+
           </div>
 
-          {isLogin && (
+          {activeTab !== "register" && (
             <p className="text-center text-sm text-zinc-400 mt-6">
               <a href="#" className="text-brand-500 hover:text-brand-400 font-medium transition-colors">
                 Forgot password?

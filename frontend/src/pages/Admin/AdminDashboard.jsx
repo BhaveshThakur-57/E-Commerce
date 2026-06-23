@@ -6,8 +6,12 @@ import AdminSidebar from "../../components/AdminSidebar";
 import {
   ShoppingBag, Users, Package, IndianRupee,
   TrendingUp, AlertTriangle, ArrowRight, Activity,
-  Clock, CheckCircle, XCircle, Truck
+  Clock, CheckCircle, XCircle, Truck, PieChart as PieIcon, BarChart3
 } from "lucide-react";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell
+} from "recharts";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -142,6 +146,74 @@ const AdminDashboard = () => {
               <span className="text-sm font-medium">{label}</span>
             </Link>
           ))}
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          {/* Revenue Chart */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-display text-xl font-bold flex items-center gap-2">
+                <Activity size={20} className="text-brand-500" /> Revenue Analytics
+              </h2>
+            </div>
+            <div className="h-[300px] w-full">
+              {stats?.revenueData && stats.revenueData.length > 0 ? (
+                <ResponsiveContainer width="99%" height="100%">
+                  <AreaChart data={stats.revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" opacity={0.5} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#71717a' }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#71717a' }} tickFormatter={(value) => `₹${value/1000}k`} />
+                    <RechartsTooltip 
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
+                      itemStyle={{ color: '#8b5cf6', fontWeight: 600 }}
+                      formatter={(value) => [`₹${value.toLocaleString("en-IN")}`, 'Revenue']}
+                    />
+                    <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-zinc-400">No revenue data available</div>
+              )}
+            </div>
+          </div>
+
+          {/* Top Products Pie/Bar */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-display text-xl font-bold flex items-center gap-2">
+                <BarChart3 size={20} className="text-accent-500" /> Top Selling Products
+              </h2>
+            </div>
+            <div className="h-[300px] w-full">
+              {stats?.topProductsData && stats.topProductsData.length > 0 ? (
+                <ResponsiveContainer width="99%" height="100%">
+                  <BarChart data={stats.topProductsData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e4e4e7" opacity={0.5} />
+                    <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#71717a' }} />
+                    <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#3f3f46' }} width={120} />
+                    <RechartsTooltip 
+                      cursor={{fill: '#f4f4f5'}}
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                    />
+                    <Bar dataKey="sold" fill="#ec4899" radius={[0, 4, 4, 0]} barSize={20}>
+                      {stats.topProductsData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={['#8b5cf6', '#ec4899', '#f43f5e', '#14b8a6', '#f59e0b'][index % 5]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-zinc-400">No sales data available</div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">

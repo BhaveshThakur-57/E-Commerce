@@ -1,5 +1,8 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -105,4 +108,38 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile };
+const googleLogin = async (req, res) => {
+  const { credential } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const { name, email, picture } = ticket.getPayload();
+    
+    let user = await User.findOne({ email });
+    
+    if (!user) {
+      // Create new user if they don't exist
+      user = await User.create({
+        name,
+        email,
+        password: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8), // random secure password
+      });
+    }
+    
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    console.error("Google login error:", error);
+    res.status(500).json({ message: "Google authentication failed" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, googleLogin };
