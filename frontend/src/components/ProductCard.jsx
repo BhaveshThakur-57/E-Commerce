@@ -89,7 +89,7 @@ const ProductCard = ({ product, index = 0 }) => {
         </div>
 
         {/* Action Buttons - fixed clipping */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 z-10">
+        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-100 translate-x-0 lg:opacity-0 lg:translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 z-10">
           {/* Wishlist Heart — real toggle */}
           <button
             onClick={handleWishlist}
@@ -113,7 +113,7 @@ const ProductCard = ({ product, index = 0 }) => {
         </div>
 
         {/* Add to Cart Button */}
-        <div className="absolute bottom-4 left-4 right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
+        <div className="absolute bottom-4 left-4 right-4 opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
           <button
             onClick={handleAdd}
             disabled={(!hasVariants && product.stock === 0) || loading}
@@ -152,7 +152,7 @@ const ProductCard = ({ product, index = 0 }) => {
             </span>
           </div>
         </div>
-        <h3 className="font-display font-semibold text-zinc-900 dark:text-zinc-100 mb-2 leading-tight line-clamp-1 group-hover:text-brand-500 transition-colors">
+        <h3 className="font-display font-semibold text-zinc-900 dark:text-zinc-100 mb-2 leading-tight line-clamp-2 lg:line-clamp-1 group-hover:text-brand-500 transition-colors text-sm sm:text-base">
           {product.name}
         </h3>
 

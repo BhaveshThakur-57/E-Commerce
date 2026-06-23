@@ -26,11 +26,11 @@ const HeroSection = () => (
           through what they wear. Limited drops. Unlimited style.
         </p>
 
-        <div className="flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-          <Link to="/shop" className="btn-primary flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+          <Link to="/shop" className="btn-primary w-full sm:w-auto flex justify-center items-center gap-2">
             Shop Now <ArrowRight size={16} />
           </Link>
-          <Link to="/shop" className="btn-outline">
+          <Link to="/shop" className="btn-outline w-full sm:w-auto flex justify-center items-center">
             Explore Collections
           </Link>
         </div>
