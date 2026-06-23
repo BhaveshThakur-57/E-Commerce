@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { User, Mail, Lock, Eye, EyeOff, Save, Package, ArrowRight, Bell } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Save, Package, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateProfileAPI } from "../services/authService";
-import { subscribeToPushAPI } from "../services/notificationService";
 
 const Profile = () => {
   const { user, login } = useAuth();
@@ -23,14 +22,7 @@ const Profile = () => {
     password: "",
   });
 
-  const [pushEnabled, setPushEnabled] = useState(false);
-  const [pushLoading, setPushLoading] = useState(false);
 
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "granted") {
-      setPushEnabled(true);
-    }
-  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -73,77 +65,7 @@ const Profile = () => {
     }
   };
 
-  const handleEnablePush = async () => {
-    try {
-      setPushLoading(true);
-      setError("");
-      setSuccess("");
-      
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        setError("Push notifications are not supported by your browser.");
-        return;
-      }
-      
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        setError("Permission denied for push notifications.");
-        return;
-      }
 
-      // Register or get existing service worker
-      let registration;
-      try {
-        registration = await navigator.serviceWorker.register("/sw.js");
-        // Wait for the service worker to be ready
-        await navigator.serviceWorker.ready;
-      } catch {
-        setError("Service Worker registration failed. Push notifications require HTTPS or localhost.");
-        return;
-      }
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY,
-      });
-
-      await subscribeToPushAPI(subscription);
-      setPushEnabled(true);
-      setSuccess("Push notifications enabled successfully!");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (err) {
-      console.error("Push notification error:", err);
-      if (err.name === "AbortError") {
-        setError("Push subscription failed. Please check your browser settings and try again.");
-      } else {
-        setError("Failed to enable push notifications. Please try again later.");
-      }
-    } finally {
-      setPushLoading(false);
-    }
-  };
-
-  const handleDisablePush = async () => {
-    try {
-      setPushLoading(true);
-      setError("");
-      setSuccess("");
-
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
-      if (subscription) {
-        await subscription.unsubscribe();
-      }
-
-      setPushEnabled(false);
-      setSuccess("Push notifications disabled successfully!");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (err) {
-      console.error("Disable push error:", err);
-      setError("Failed to disable push notifications.");
-    } finally {
-      setPushLoading(false);
-    }
-  };
 
   return (
     <main className="min-h-screen pt-28 pb-20">
@@ -182,7 +104,6 @@ const Profile = () => {
                 {[
                   { id: "profile", label: "Edit Profile", icon: User },
                   { id: "password", label: "Change Password", icon: Lock },
-                  { id: "notifications", label: "Notifications", icon: Bell },
                 ].map(({ id, label, icon: Icon }) => (
                   <button
                     key={id}
@@ -371,46 +292,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {/* Notifications Tab */}
-              {activeTab === "notifications" && (
-                <div>
-                  <h2 className="font-display text-xl font-bold mb-6">
-                    Notifications Settings
-                  </h2>
-                  <div className="p-6 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mb-4">
-                      <Bell size={28} />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">Order Updates via Web Push</h3>
-                    <p className="text-sm text-zinc-500 mb-6 max-w-sm">
-                      Enable push notifications to receive real-time updates when your orders are shipped or delivered.
-                    </p>
-                    
-                    {pushEnabled ? (
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold flex items-center gap-2">
-                          <span>✅</span> Notifications Enabled
-                        </div>
-                        <button
-                          onClick={handleDisablePush}
-                          disabled={pushLoading}
-                          className="text-sm text-red-500 hover:text-red-600 underline underline-offset-2 transition-colors"
-                        >
-                          {pushLoading ? "Disabling..." : "Disable Notifications"}
-                        </button>
-                      </div>
-                    ) : (
-                      <button 
-                        onClick={handleEnablePush}
-                        disabled={pushLoading}
-                        className={`btn-primary px-8 ${pushLoading ? "opacity-70 cursor-not-allowed" : ""}`}
-                      >
-                        {pushLoading ? "Enabling..." : "Enable Push Notifications"}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+
             </div>
           </div>
         </div>

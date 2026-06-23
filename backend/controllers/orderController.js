@@ -6,7 +6,6 @@ const generateOrderId = require("../utils/generateOrderId");
 const sendEmail = require("../utils/sendEmail");
 const { orderConfirmationEmail, orderCancelledEmail, paymentPendingEmail } = require("../utils/emailTemplates");
 const User = require("../models/User");
-const { sendPushNotification } = require("../utils/pushHelper");
 
 const createOrder = async (req, res) => {
   const { shippingAddress, couponCode, discountAmount } = req.body;
@@ -127,21 +126,6 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save();
 
-    // Send Push Notification
-    if (orderStatus === "shipped" || orderStatus === "delivered") {
-      try {
-        const orderUser = await User.findById(order.user);
-        if (orderUser && orderUser.pushSubscription) {
-          await sendPushNotification(orderUser.pushSubscription, {
-            title: `Order ${orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}`,
-            body: statusMessages[orderStatus],
-            url: `/profile`,
-          });
-        }
-      } catch (err) {
-        console.error("Push Notification Error:", err);
-      }
-    }
 
     res.json(order);
   } catch (error) {
