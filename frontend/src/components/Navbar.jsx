@@ -180,7 +180,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full glass animate-fade-in border-t border-zinc-200/50 dark:border-zinc-800/50">
+        <div className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-zinc-950 shadow-2xl animate-fade-in border-t border-zinc-200 dark:border-zinc-800">
           <div className="px-6 py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
