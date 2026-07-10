@@ -509,7 +509,7 @@ Contributions are welcome! Here's how to get started:
 5. **Open** a Pull Request
 
 ---
----
+
 
 <p align="center">
   <strong>Built with ❤️ by Bhavesh Thakur</strong>
