@@ -9,6 +9,12 @@
 </p>
 
 <p align="center">
+  <a href="https://e-commerce-seven-mu-27.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Demo-🔗-7c3aed?style=for-the-badge" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB" />
@@ -167,15 +173,33 @@ The platform handles the complete shopping lifecycle: product browsing, AI-power
 
 ## 📸 Screenshots
 
-> _Add screenshots of your live application here. Suggested screens:_
-> - 🏠 **Home Page** — Hero section, categories, trending products, testimonials
-> - 🛍️ **Shop Page** — Product grid with filters and search
-> - 📦 **Product Detail** — Image gallery, size selection, reviews, AI recommendations
-> - 🛒 **Cart & Checkout** — Slide-out cart, address form, coupon input
-> - 💳 **Payment** — Razorpay integration flow
-> - 📊 **Admin Dashboard** — Revenue analytics, order status, low stock alerts
-> - 📝 **Admin Products** — Product CRUD with AI description generator
-> - 🤖 **AI Chatbot** — Floating assistant conversation
+### 🏠 Storefront & Customer Experience
+
+| Home Page (Light Mode) | Home Page (Dark Mode) |
+| :---: | :---: |
+| ![Home Page Light](Screenshots/Screenshot%202026-07-10%20170625.png) | ![Home Page Dark](Screenshots/Screenshot%202026-07-10%20170958.png) |
+
+| Shop & Collections | Product Detail |
+| :---: | :---: |
+| ![Shop Page](Screenshots/Screenshot%202026-07-10%20171037.png) | ![Product Detail](Screenshots/Screenshot%202026-07-10%20172122.png) |
+
+| AI Size Predictor | AI Chatbot Assistant |
+| :---: | :---: |
+| ![AI Size Predictor](Screenshots/Screenshot%202026-07-10%20171221.png) | ![AI Chatbot](Screenshots/Screenshot%202026-07-10%20171751.png) |
+
+| Cart Sidebar | Checkout |
+| :---: | :---: |
+| ![Cart Sidebar](Screenshots/Screenshot%202026-07-10%20171905.png) | ![Checkout](Screenshots/Screenshot%202026-07-10%20171941.png) |
+
+### 🔒 Admin Dashboard & Management
+
+| Admin Dashboard (Analytics) | Bulk Operations (Stock & CSV) |
+| :---: | :---: |
+| ![Admin Dashboard](Screenshots/Screenshot%202026-07-10%20172015.png) | ![Bulk Operations](Screenshots/Screenshot%202026-07-10%20172044.png) |
+
+| Admin Inquiries Management |
+| :---: |
+| ![Admin Inquiries](Screenshots/Screenshot%202026-07-10%20172109.png) |
 
 ---
 
