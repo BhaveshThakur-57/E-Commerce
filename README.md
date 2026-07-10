@@ -175,31 +175,31 @@ The platform handles the complete shopping lifecycle: product browsing, AI-power
 
 ### 🏠 Storefront & Customer Experience
 
-| Homepage (Dark Mode) | Shop Page / Product Catalog |
+| Home Page (Dark Mode) | Shop Page (Dark Mode) |
 | :---: | :---: |
-| ![Homepage Dark](Screenshots/Screenshot%202026-07-10%20170625.png) | ![Shop Page](Screenshots/Screenshot%202026-07-10%20170958.png) |
+| ![Home Page Light](Screenshots/Screenshot%202026-07-10%20170625.png) | ![Home Page Dark](Screenshots/Screenshot%202026-07-10%20170958.png) |
 
-| Product Details Page (Light Mode) | Empty Cart Page & Recommendations |
+| Shop & Collections | Product Detail |
 | :---: | :---: |
-| ![Product Details](Screenshots/Screenshot%202026-07-10%20171037.png) | ![Empty Cart / Recommendations](Screenshots/Screenshot%202026-07-10%20172122.png) |
+| ![Shop Page](Screenshots/Screenshot%202026-07-10%20171037.png) | ![Product Detail](Screenshots/Screenshot%202026-07-10%20172122.png) |
 
-| AI Size Predictor Modal | AI Chatbot / LUXORA Assistant |
+| AI Size Predictor | AI Chatbot Assistant |
 | :---: | :---: |
-| ![AI Size Predictor](Screenshots/Screenshot%202026-07-10%20172109.png) | ![AI Chatbot](Screenshots/Screenshot%202026-07-10%20172044.png) |
+| ![AI Size Predictor](Screenshots/Screenshot%202026-07-10%20171221.png) | ![AI Chatbot](Screenshots/Screenshot%202026-07-10%20171751.png) |
 
-| Checkout Page | My Orders / Order History Page |
+| Cart Sidebar | Checkout |
 | :---: | :---: |
-| ![Checkout Page](Screenshots/Screenshot%202026-07-10%20171221.png) | ![My Orders](Screenshots/Screenshot%202026-07-10%20171751.png) |
+| ![Cart Sidebar](Screenshots/Screenshot%202026-07-10%20171905.png) | ![Checkout](Screenshots/Screenshot%202026-07-10%20171941.png) |
 
 ### 🔒 Admin Dashboard & Management
 
-| Admin Dashboard (Analytics) | Admin Add/Edit Product Modal |
+| Admin Dashboard (Analytics) | Bulk Operations (Stock & CSV) |
 | :---: | :---: |
-| ![Admin Dashboard](Screenshots/Screenshot%202026-07-10%20171905.png) | ![Admin Add Product Modal](Screenshots/Screenshot%202026-07-10%20171941.png) |
+| ![Admin Dashboard](Screenshots/Screenshot%202026-07-10%20172015.png) | ![Bulk Operations](Screenshots/Screenshot%202026-07-10%20172044.png) |
 
-| Admin Coupons Management Page |
+| Admin Inquiries Management |
 | :---: |
-| ![Admin Coupons Management](Screenshots/Screenshot%202026-07-10%20172015.png) |
+| ![Admin Inquiries](Screenshots/Screenshot%202026-07-10%20172109.png) |
 
 ---
 
@@ -297,87 +297,6 @@ VITE_API_URL=http://localhost:5000
 VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id
 VITE_RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
 ```
-
----
-
-## 📡 API Endpoints
-
-### Authentication
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/api/auth/register` | Register new user | ❌ |
-| `POST` | `/api/auth/login` | Login with email/password | ❌ |
-| `POST` | `/api/auth/google` | Google OAuth login | ❌ |
-| `GET` | `/api/auth/profile` | Get user profile | ✅ |
-| `PUT` | `/api/auth/profile` | Update user profile | ✅ |
-
-### Products
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/products` | Get all products | ❌ |
-| `GET` | `/api/products/:id` | Get single product | ❌ |
-| `POST` | `/api/products` | Create product | 🔒 Admin |
-| `PUT` | `/api/products/:id` | Update product | 🔒 Admin |
-| `DELETE` | `/api/products/:id` | Delete product | 🔒 Admin |
-
-### Cart
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/cart` | Get user's cart | ✅ |
-| `POST` | `/api/cart` | Add item to cart | ✅ |
-| `PUT` | `/api/cart` | Update cart item qty | ✅ |
-| `DELETE` | `/api/cart/:id` | Remove item from cart | ✅ |
-
-### Orders
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/api/orders` | Create new order | ✅ |
-| `GET` | `/api/orders` | Get user's orders | ✅ |
-| `GET` | `/api/orders/:id` | Get order by ID | ✅ |
-
-### Payments
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/api/payment/create-order` | Create Razorpay order | ✅ |
-| `POST` | `/api/payment/verify` | Verify payment signature | ✅ |
-| `POST` | `/api/payment/failed` | Handle failed payment | ✅ |
-| `POST` | `/api/payment/send-success-email` | Trigger confirmation email | ✅ |
-
-### AI Features
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/ai/search?q=` | AI-powered smart search | ❌ |
-| `GET` | `/api/ai/recommendations/:productId` | Get AI recommendations | ❌ |
-| `POST` | `/api/ai/generate-description` | Generate product description | 🔒 Admin |
-| `POST` | `/api/ai/predict-size` | AI size prediction | ❌ |
-
-### Other Endpoints
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/api/coupons/validate` | Validate coupon code | ✅ |
-| `GET/POST` | `/api/wishlist` | Get/Toggle wishlist | ✅ |
-| `GET/POST` | `/api/reviews/:productId` | Get/Create reviews | ✅ |
-| `POST` | `/api/chat` | AI chatbot message | ❌ |
-| `GET` | `/api/invoice/:orderId` | Download PDF invoice | ✅ |
-| `POST` | `/api/inquiries` | Submit contact inquiry | ❌ |
-| `GET/PUT` | `/api/settings` | Site settings (admin) | 🔒 Admin |
-| `POST` | `/api/upload` | Upload product images | 🔒 Admin |
-
-### Admin Endpoints
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/admin/stats` | Dashboard statistics | 🔒 Admin |
-| `GET` | `/api/admin/orders` | All orders | 🔒 Admin |
-| `PUT` | `/api/admin/orders/:id` | Update order status | 🔒 Admin |
-| `GET` | `/api/admin/users` | All users | 🔒 Admin |
-| `POST` | `/api/admin/bulk-stock` | Bulk update stock | 🔒 Admin |
-| `POST` | `/api/admin/bulk-upload` | Bulk upload products (CSV) | 🔒 Admin |
-| `GET/POST/PUT/DELETE` | `/api/coupons` | Coupon CRUD | 🔒 Admin |
-| `GET/PUT` | `/api/admin/inquiries` | Manage inquiries | 🔒 Admin |
-
-> **Legend:** ❌ = Public, ✅ = User Auth Required, 🔒 = Admin Only
-
----
 
 ## 🤖 AI Features
 
@@ -590,15 +509,10 @@ Contributions are welcome! Here's how to get started:
 5. **Open** a Pull Request
 
 ---
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
 ---
 
 <p align="center">
-  <strong>Built with ❤️ by <a href="https://github.com/your-username">Bhavesh Thakur</a></strong>
+  <strong>Built with ❤️ by Bhavesh Thakur</strong>
 </p>
 
 <p align="center">
