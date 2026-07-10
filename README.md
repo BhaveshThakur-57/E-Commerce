@@ -175,31 +175,31 @@ The platform handles the complete shopping lifecycle: product browsing, AI-power
 
 ### 🏠 Storefront & Customer Experience
 
-| Home Page (Light Mode) | Home Page (Dark Mode) |
+| Homepage (Dark Mode) | Shop Page / Product Catalog |
 | :---: | :---: |
-| ![Home Page Light](Screenshots/Screenshot%202026-07-10%20170625.png) | ![Home Page Dark](Screenshots/Screenshot%202026-07-10%20170958.png) |
+| ![Homepage Dark](Screenshots/Screenshot%202026-07-10%20170625.png) | ![Shop Page](Screenshots/Screenshot%202026-07-10%20170958.png) |
 
-| Shop & Collections | Product Detail |
+| Product Details Page (Light Mode) | Empty Cart Page & Recommendations |
 | :---: | :---: |
-| ![Shop Page](Screenshots/Screenshot%202026-07-10%20171037.png) | ![Product Detail](Screenshots/Screenshot%202026-07-10%20172122.png) |
+| ![Product Details](Screenshots/Screenshot%202026-07-10%20171037.png) | ![Empty Cart / Recommendations](Screenshots/Screenshot%202026-07-10%20172122.png) |
 
-| AI Size Predictor | AI Chatbot Assistant |
+| AI Size Predictor Modal | AI Chatbot / LUXORA Assistant |
 | :---: | :---: |
-| ![AI Size Predictor](Screenshots/Screenshot%202026-07-10%20171221.png) | ![AI Chatbot](Screenshots/Screenshot%202026-07-10%20171751.png) |
+| ![AI Size Predictor](Screenshots/Screenshot%202026-07-10%20172109.png) | ![AI Chatbot](Screenshots/Screenshot%202026-07-10%20172044.png) |
 
-| Cart Sidebar | Checkout |
+| Checkout Page | My Orders / Order History Page |
 | :---: | :---: |
-| ![Cart Sidebar](Screenshots/Screenshot%202026-07-10%20171905.png) | ![Checkout](Screenshots/Screenshot%202026-07-10%20171941.png) |
+| ![Checkout Page](Screenshots/Screenshot%202026-07-10%20171221.png) | ![My Orders](Screenshots/Screenshot%202026-07-10%20171751.png) |
 
 ### 🔒 Admin Dashboard & Management
 
-| Admin Dashboard (Analytics) | Bulk Operations (Stock & CSV) |
+| Admin Dashboard (Analytics) | Admin Add/Edit Product Modal |
 | :---: | :---: |
-| ![Admin Dashboard](Screenshots/Screenshot%202026-07-10%20172015.png) | ![Bulk Operations](Screenshots/Screenshot%202026-07-10%20172044.png) |
+| ![Admin Dashboard](Screenshots/Screenshot%202026-07-10%20171905.png) | ![Admin Add Product Modal](Screenshots/Screenshot%202026-07-10%20171941.png) |
 
-| Admin Inquiries Management |
+| Admin Coupons Management Page |
 | :---: |
-| ![Admin Inquiries](Screenshots/Screenshot%202026-07-10%20172109.png) |
+| ![Admin Coupons Management](Screenshots/Screenshot%202026-07-10%20172015.png) |
 
 ---
 
