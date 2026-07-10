@@ -10,7 +10,7 @@ import {
 import {
   MessageSquare, Mail, Clock, Send, Trash2, Eye,
   CheckCircle, XCircle, MailOpen, Reply, Filter,
-  Search, AlertTriangle
+  Search, AlertTriangle, ArrowLeft
 } from "lucide-react";
 
 const AdminInquiries = () => {
@@ -153,7 +153,7 @@ const AdminInquiries = () => {
         {/* Layout: List + Detail */}
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Inquiry List */}
-          <div className="lg:col-span-2 space-y-2 max-h-[70vh] overflow-y-auto pr-1">
+          <div className={`lg:col-span-2 space-y-2 max-h-[70vh] overflow-y-auto pr-1 ${selected ? "hidden lg:block" : "block"}`}>
             {filtered.length === 0 ? (
               <div className="text-center py-12 text-zinc-400">
                 <MessageSquare size={48} className="mx-auto mb-3 opacity-30" />
@@ -190,7 +190,7 @@ const AdminInquiries = () => {
           </div>
 
           {/* Detail View */}
-          <div className="lg:col-span-3">
+          <div className={`lg:col-span-3 ${!selected ? "hidden lg:block" : "block"}`}>
             {!selected ? (
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-12 text-center">
                 <Eye size={48} className="mx-auto mb-3 text-zinc-300 dark:text-zinc-700" />
@@ -200,14 +200,22 @@ const AdminInquiries = () => {
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-6 sm:p-8">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <h2 className="font-display text-xl font-bold">{selected.subject}</h2>
+                  <div className="flex items-start gap-3">
+                    <button
+                      onClick={() => setSelected(null)}
+                      className="lg:hidden mt-1 p-2 -ml-2 text-zinc-400 hover:text-brand-500 hover:bg-brand-500/10 rounded-lg transition-all"
+                    >
+                      <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                      <h2 className="font-display text-xl font-bold">{selected.subject}</h2>
                     <p className="text-sm text-zinc-500 mt-1">
                       From <span className="font-medium text-zinc-700 dark:text-zinc-300">{selected.name}</span> ({selected.email})
                     </p>
                     <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1">
                       <Clock size={12} /> {new Date(selected.createdAt).toLocaleString("en-IN")}
                     </p>
+                  </div>
                   </div>
                   <div className="flex gap-2">
                     <button
